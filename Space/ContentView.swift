@@ -35,15 +35,15 @@ struct FileItem: Hashable, Identifiable, CustomStringConvertible {
     }
 }
 
-//func getTableContextFromSidebar(set: Set<FileItem>) -> [FileItem] {
-//    if set.count != 1 {
-//        return []
-//    }
-//    if set.first!.children == nil {
-//        return []
-//    }
-//    return set.first!.children!
-//}
+func getTableContextFromSidebar(set: Set<FileItem>) -> [FileItem] {
+    if set.count != 1 {
+        return []
+    }
+    if set.first!.children == nil {
+        return []
+    }
+    return set.first!.children!
+}
 //
 //func getPreviewContextFromTable(set: Set<FileItem>) -> String {
 //    if set.count != 1 {
@@ -55,59 +55,33 @@ struct FileItem: Hashable, Identifiable, CustomStringConvertible {
 //    return set.first!.content!
 //}
 
-func getFiles() -> [FileItem] {
+func getChildren(url: URL) -> [FileItem] {
     do {
-        let resourceKeys = Set<URLResourceKey>([
-            .nameKey,
-            .isDirectoryKey,
-            .parentDirectoryURLKey,
+        let resourceKeys = Array<URLResourceKey>([
+            .isDirectoryKey
         ])
-        let directoryEnumerator = fm.enumerator(at: root, includingPropertiesForKeys: Array(resourceKeys))!
-        var dirstack: [FileItem] = [FileItem(url: root)]
-        var lastUrl = root
-        for case let currentFileUrl as URL in directoryEnumerator {
-            guard let resourceValues = try? currentFileUrl.resourceValues(forKeys: resourceKeys),
-                let isDirectory = resourceValues.isDirectory,
-                let name = resourceValues.name,
-                let fileParent = resourceValues.parentDirectory
-                else {
-                    continue
-                }
-
-            if (dirstack.last!.children == nil) {
-                dirstack[dirstack.count - 1].children = []
+        var children: [FileItem] = []
+        for fileUrl in try fm.contentsOfDirectory(at: url, includingPropertiesForKeys: resourceKeys) {
+            guard let values = try?
+                    fileUrl.resourceValues(forKeys: Set<URLResourceKey>([
+                        .isDirectoryKey
+                    ])),
+                  let isDirectory = values.isDirectory
+            else {continue}
+            var file = FileItem(url: fileUrl)
+            if isDirectory {
+                file.children = getChildren(url: fileUrl)
             }
-            
-            let diff = lastUrl.pathComponents.count  - currentFileUrl.pathComponents.count
-            
-            if (diff > 0) {
-                let last: FileItem = dirstack.popLast()!
-                dirstack[dirstack.count - 1].children!.append(last)
-                if (diff > 1)
-            }
-
-            if (currentFileUrl.pathComponents.count == 0) {
-                
-                dirstack[dirstack.count - 1].children!.append(last)
-            }
-            if (isDirectory) {
-                let dir = FileItem(url: currentFileUrl)
-                dirstack.append(dir)
-            } else {
-                dirstack[dirstack.count - 1]
-                    .children!.append(FileItem(url: currentFileUrl))
-            }
-            lastUrl = currentFileUrl
+            children.append(file)
         }
-        let last: FileItem = dirstack.popLast()!
-        dirstack[dirstack.count - 1].children!.append(last)
-        return dirstack.last!.children!
+        return children
     } catch {
-        return [
-            FileItem(
-                url: URL(fileURLWithPath: "/problem")
-            )]
+        return []
     }
+}
+
+func getFiles() -> [FileItem] {
+    return getChildren(url: root)
 }
 
 struct ContentView: View {
@@ -120,7 +94,8 @@ struct ContentView: View {
     
     var body: some View {
         HSplitView {
-            List(selection: $sidebarSelection) {                OutlineGroup(files, children: \.children) {item in
+            List(selection: $sidebarSelection) {
+                OutlineGroup(files, children: \.children) {item in
                     Image(nsImage: item.icon)
                     Text(item.description)
                 }
@@ -134,7 +109,7 @@ struct ContentView: View {
                 }
             }
         VSplitView {
-            Table(files, selection: $tableSelection) {
+            Table(getTableContextFromSidebar(set: sidebarSelection), selection: $tableSelection) {
                 TableColumn("name", value: \.url.lastPathComponent)
                 TableColumn("path", value: \.url.path)
                 }.onChange(of: tableSelection) {tableSelection in
