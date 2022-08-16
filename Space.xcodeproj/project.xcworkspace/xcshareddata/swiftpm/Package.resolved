@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "outlineview",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/EncodiaDotCo/OutlineView",
+      "state" : {
+        "revision" : "4b73ac224d3156def45faf040a3445a9d4f1a7d3",
+        "version" : "0.0.1"
+      }
+    }
+  ],
+  "version" : 2
+}

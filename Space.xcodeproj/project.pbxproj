@@ -14,6 +14,7 @@
 		F086C31F28A5F8E300C0788A /* SpaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C31E28A5F8E300C0788A /* SpaceTests.swift */; };
 		F086C32928A5F8E300C0788A /* SpaceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C32828A5F8E300C0788A /* SpaceUITests.swift */; };
 		F086C32B28A5F8E300C0788A /* SpaceUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C32A28A5F8E300C0788A /* SpaceUITestsLaunchTests.swift */; };
+		F0967C8428AB595700C9792C /* EncodiaOutlineView in Frameworks */ = {isa = PBXBuildFile; productRef = F0967C8328AB595700C9792C /* EncodiaOutlineView */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,6 +53,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0967C8428AB595700C9792C /* EncodiaOutlineView in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -145,6 +147,9 @@
 			dependencies = (
 			);
 			name = Space;
+			packageProductDependencies = (
+				F0967C8328AB595700C9792C /* EncodiaOutlineView */,
+			);
 			productName = Space;
 			productReference = F086C30928A5F8E200C0788A /* Space.app */;
 			productType = "com.apple.product-type.application";
@@ -217,6 +222,9 @@
 				Base,
 			);
 			mainGroup = F086C30028A5F8E200C0788A;
+			packageReferences = (
+				F0967C8228AB595600C9792C /* XCRemoteSwiftPackageReference "OutlineView" */,
+			);
 			productRefGroup = F086C30A28A5F8E200C0788A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -576,6 +584,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		F0967C8228AB595600C9792C /* XCRemoteSwiftPackageReference "OutlineView" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/EncodiaDotCo/OutlineView";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.0.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		F0967C8328AB595700C9792C /* EncodiaOutlineView */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F0967C8228AB595600C9792C /* XCRemoteSwiftPackageReference "OutlineView" */;
+			productName = EncodiaOutlineView;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = F086C30128A5F8E200C0788A /* Project object */;
 }
