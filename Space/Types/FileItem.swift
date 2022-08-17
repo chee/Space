@@ -34,6 +34,9 @@ struct FileItem: Identifiable, Hashable, Equatable, Comparable {
 								])),
 							let contentType = values.contentType
 				else {continue}
+				if (["plist", "annotation"].contains(fileUrl.pathExtension)) {
+					continue
+				}
 				children.append(FileItem(
 					url: fileUrl,
 					type: contentType

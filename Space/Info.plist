@@ -17,6 +17,17 @@
 	</array>
 	<key>NSAppleScriptEnabled</key>
 	<true/>
+	<key>NSServices</key>
+	<array>
+		<dict>
+			<key>NSMenuItem</key>
+			<dict/>
+			<key>NSReturnTypes</key>
+			<array>
+				<string>image</string>
+			</array>
+		</dict>
+	</array>
 	<key>OSAScriptingDefinition</key>
 	<string>SpaceTerminology</string>
 </dict>

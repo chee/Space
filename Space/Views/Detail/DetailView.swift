@@ -17,9 +17,11 @@ struct DetailView: View {
 	static let plainTypes: [UTType] = [.plainText]
 	var body: some View {
 		HSplitView {
-			RichTextEditorView(file: $file)
-			if file != nil && !Self.richTypes.contains(file!.type) {
-				QLImage(url:file!.url).background()
+			Group {
+				RichTextEditorView(file: $file)
+				if file != nil && !Self.richTypes.contains(file!.type) {
+					QuicklookDetailView(url:file!.url).background()
+				}
 			}
 			RichTextEditorView(file: $annotation)
 		}.onChange(of: file) {newFile in

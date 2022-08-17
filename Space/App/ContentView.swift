@@ -14,7 +14,7 @@ struct ContentView: View {
 	).resolvingSymlinksInPath()
 
 	var body: some View {
-		MainView(rootURL: rootURL)
+		MainView(rootURL)
 	}
 }
 

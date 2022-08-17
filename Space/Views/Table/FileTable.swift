@@ -11,22 +11,38 @@ struct FileTable: View {
 	@State private var selection = Set<FileItem>()
 	@Binding var context: FileItem?
 	@Binding var choice: FileItem?
-
+	var openDirectory: (FileItem) -> Void
+	@State private var sortOrder = [KeyPathComparator(\FileItem.name)]
+	@State private var children: [FileItem]?
 	var body: some View {
-		if context != nil {
-			Table(context!.children, selection: $selection) {
+		if children != nil {
+			Table(children!, selection: $selection, sortOrder: $sortOrder) {
 				TableColumn("name", value: \.name)
 				TableColumn("type", value: \.type.description)
-			}.onChange(of: context) {newContext in
+			}.onChange(of: sortOrder) {newSort in
+				children!.sort(using: newSort)
+			}
+		}
+		Group {}
+			.onChange(of: context) {newContext in
 				selection.removeAll()
 				choice = nil
-			}.onChange(of: selection) {selected in
+				children = nil
+				if newContext != nil {
+					children = context!.children.sorted(using: sortOrder)
+				}
+			}
+			.onChange(of: selection) {selected in
 				choice = nil
-				if (selected.count == 1) {
+				if selected.count == 1 {
 					choice = selected.first!
 				}
 			}
-		}
+			.onChange(of: choice) {chosen in
+				if chosen != nil && selection.count == 0 {
+					selection.insert(chosen!)
+				}
+			}
 	}
 }
 //

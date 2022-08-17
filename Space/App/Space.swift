@@ -21,12 +21,21 @@ var _previewRootFile = FileItem(
 	type: UTType.folder
 )
 
+
 @main
 struct Space: App {
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
 		}
-		.windowStyle(.hiddenTitleBar)
+//		.windowStyle(.hiddenTitleBar)
+//		.windowToolbarStyle(.unified)
+		.commands {
+			SidebarCommands()
+			TextEditingCommands()
+			TextFormattingCommands()
+			ToolbarCommands()
+			ImportFromDevicesCommands()
+		}
 	}
 }
