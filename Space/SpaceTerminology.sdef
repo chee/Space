@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE dictionary SYSTEM "file://localhost/System/Library/DTDs/sdef.dtd">
+<dictionary title="Space Scripting Terminology">
+	<suite name="Space Communication Suite" code="spcs" description="Space communication suite.">
+		<command name="echo" code="spcsSend">
+			<cocoa class="Space.SendCommand"/>
+			<access-group identifier="*"/>
+			<parameter code="pcmd" name="message" description="Command to send" type="text">
+				<cocoa key="message"/>
+			</parameter>
+			<result type="text" description="response"/>
+		</command>
+	</suite>
+</dictionary>

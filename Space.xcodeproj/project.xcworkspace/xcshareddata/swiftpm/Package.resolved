@@ -1,12 +1,12 @@
 {
   "pins" : [
     {
-      "identity" : "outlineview",
+      "identity" : "richtextkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/EncodiaDotCo/OutlineView",
+      "location" : "https://github.com/danielsaidi/RichTextKit.git",
       "state" : {
-        "revision" : "4b73ac224d3156def45faf040a3445a9d4f1a7d3",
-        "version" : "0.0.1"
+        "revision" : "d608a389a7f463adf8c12bcc0108395e7c78c229",
+        "version" : "0.1.1"
       }
     }
   ],

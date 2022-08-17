@@ -7,14 +7,25 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		F086C30D28A5F8E200C0788A /* SpaceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C30C28A5F8E200C0788A /* SpaceApp.swift */; };
+		F086C30D28A5F8E200C0788A /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C30C28A5F8E200C0788A /* Space.swift */; };
 		F086C30F28A5F8E200C0788A /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C30E28A5F8E200C0788A /* ContentView.swift */; };
 		F086C31128A5F8E300C0788A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F086C31028A5F8E300C0788A /* Assets.xcassets */; };
 		F086C31428A5F8E300C0788A /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F086C31328A5F8E300C0788A /* Preview Assets.xcassets */; };
 		F086C31F28A5F8E300C0788A /* SpaceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C31E28A5F8E300C0788A /* SpaceTests.swift */; };
 		F086C32928A5F8E300C0788A /* SpaceUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C32828A5F8E300C0788A /* SpaceUITests.swift */; };
 		F086C32B28A5F8E300C0788A /* SpaceUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C32A28A5F8E300C0788A /* SpaceUITestsLaunchTests.swift */; };
-		F0967C8428AB595700C9792C /* EncodiaOutlineView in Frameworks */ = {isa = PBXBuildFile; productRef = F0967C8328AB595700C9792C /* EncodiaOutlineView */; };
+		F0967C8628AB930500C9792C /* QLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C8528AB930500C9792C /* QLImage.swift */; };
+		F0967C8828AB93DA00C9792C /* SidebarFileTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C8728AB93DA00C9792C /* SidebarFileTree.swift */; };
+		F0967C8D28AB955900C9792C /* FileItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C8C28AB955900C9792C /* FileItem.swift */; };
+		F0967C8F28AB965000C9792C /* WebView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C8E28AB965000C9792C /* WebView.swift */; };
+		F0967C9128AC17F000C9792C /* MainView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C9028AC17F000C9792C /* MainView.swift */; };
+		F0967C9328AC186D00C9792C /* SidebarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C9228AC186D00C9792C /* SidebarView.swift */; };
+		F0967C9828AC1A0900C9792C /* FileTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C9728AC1A0900C9792C /* FileTable.swift */; };
+		F0967C9A28AC2D8000C9792C /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C9928AC2D8000C9792C /* DetailView.swift */; };
+		F0967C9F28AC3D3800C9792C /* SpaceTerminology.sdef in Resources */ = {isa = PBXBuildFile; fileRef = F0967C9E28AC3D3800C9792C /* SpaceTerminology.sdef */; };
+		F0967CA128AC3DDB00C9792C /* Scripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967CA028AC3DDB00C9792C /* Scripts.swift */; };
+		F0C8D79228AC5EB2002E864D /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F0C8D79128AC5EB2002E864D /* RichTextKit */; };
+		F0C8D79428AC5EF0002E864D /* RichTextEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C8D79328AC5EF0002E864D /* RichTextEditorView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,7 +47,7 @@
 
 /* Begin PBXFileReference section */
 		F086C30928A5F8E200C0788A /* Space.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Space.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		F086C30C28A5F8E200C0788A /* SpaceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceApp.swift; sourceTree = "<group>"; };
+		F086C30C28A5F8E200C0788A /* Space.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Space.swift; sourceTree = "<group>"; };
 		F086C30E28A5F8E200C0788A /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		F086C31028A5F8E300C0788A /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F086C31328A5F8E300C0788A /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
@@ -46,6 +57,18 @@
 		F086C32428A5F8E300C0788A /* SpaceUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = SpaceUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F086C32828A5F8E300C0788A /* SpaceUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceUITests.swift; sourceTree = "<group>"; };
 		F086C32A28A5F8E300C0788A /* SpaceUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpaceUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		F0967C8528AB930500C9792C /* QLImage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QLImage.swift; sourceTree = "<group>"; };
+		F0967C8728AB93DA00C9792C /* SidebarFileTree.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarFileTree.swift; sourceTree = "<group>"; };
+		F0967C8C28AB955900C9792C /* FileItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileItem.swift; sourceTree = "<group>"; };
+		F0967C8E28AB965000C9792C /* WebView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebView.swift; sourceTree = "<group>"; };
+		F0967C9028AC17F000C9792C /* MainView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainView.swift; sourceTree = "<group>"; };
+		F0967C9228AC186D00C9792C /* SidebarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SidebarView.swift; sourceTree = "<group>"; };
+		F0967C9728AC1A0900C9792C /* FileTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileTable.swift; sourceTree = "<group>"; };
+		F0967C9928AC2D8000C9792C /* DetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailView.swift; sourceTree = "<group>"; };
+		F0967C9B28AC3BEA00C9792C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		F0967C9E28AC3D3800C9792C /* SpaceTerminology.sdef */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = SpaceTerminology.sdef; sourceTree = "<group>"; };
+		F0967CA028AC3DDB00C9792C /* Scripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scripts.swift; sourceTree = "<group>"; };
+		F0C8D79328AC5EF0002E864D /* RichTextEditorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RichTextEditorView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -53,7 +76,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0967C8428AB595700C9792C /* EncodiaOutlineView in Frameworks */,
+				F0C8D79228AC5EB2002E864D /* RichTextKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -97,11 +120,15 @@
 		F086C30B28A5F8E200C0788A /* Space */ = {
 			isa = PBXGroup;
 			children = (
-				F086C30C28A5F8E200C0788A /* SpaceApp.swift */,
-				F086C30E28A5F8E200C0788A /* ContentView.swift */,
+				F0967C9B28AC3BEA00C9792C /* Info.plist */,
+				F0967C8A28AB950F00C9792C /* App */,
+				F0967C8B28AB952000C9792C /* Types */,
+				F0967C8928AB94F100C9792C /* Views */,
 				F086C31028A5F8E300C0788A /* Assets.xcassets */,
 				F086C31528A5F8E300C0788A /* Space.entitlements */,
 				F086C31228A5F8E300C0788A /* Preview Content */,
+				F0967C9E28AC3D3800C9792C /* SpaceTerminology.sdef */,
+				F0967CA028AC3DDB00C9792C /* Scripts.swift */,
 			);
 			path = Space;
 			sourceTree = "<group>";
@@ -131,6 +158,62 @@
 			path = SpaceUITests;
 			sourceTree = "<group>";
 		};
+		F0967C8928AB94F100C9792C /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				F0967C9428AC188500C9792C /* Sidebar */,
+				F0967C9628AC19CB00C9792C /* Table */,
+				F0967C9528AC19BC00C9792C /* Detail */,
+				F0967C9028AC17F000C9792C /* MainView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		F0967C8A28AB950F00C9792C /* App */ = {
+			isa = PBXGroup;
+			children = (
+				F086C30E28A5F8E200C0788A /* ContentView.swift */,
+				F086C30C28A5F8E200C0788A /* Space.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
+		F0967C8B28AB952000C9792C /* Types */ = {
+			isa = PBXGroup;
+			children = (
+				F0967C8C28AB955900C9792C /* FileItem.swift */,
+			);
+			path = Types;
+			sourceTree = "<group>";
+		};
+		F0967C9428AC188500C9792C /* Sidebar */ = {
+			isa = PBXGroup;
+			children = (
+				F0967C8728AB93DA00C9792C /* SidebarFileTree.swift */,
+				F0967C9228AC186D00C9792C /* SidebarView.swift */,
+			);
+			path = Sidebar;
+			sourceTree = "<group>";
+		};
+		F0967C9528AC19BC00C9792C /* Detail */ = {
+			isa = PBXGroup;
+			children = (
+				F0967C8528AB930500C9792C /* QLImage.swift */,
+				F0967C8E28AB965000C9792C /* WebView.swift */,
+				F0967C9928AC2D8000C9792C /* DetailView.swift */,
+				F0C8D79328AC5EF0002E864D /* RichTextEditorView.swift */,
+			);
+			path = Detail;
+			sourceTree = "<group>";
+		};
+		F0967C9628AC19CB00C9792C /* Table */ = {
+			isa = PBXGroup;
+			children = (
+				F0967C9728AC1A0900C9792C /* FileTable.swift */,
+			);
+			path = Table;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -148,7 +231,7 @@
 			);
 			name = Space;
 			packageProductDependencies = (
-				F0967C8328AB595700C9792C /* EncodiaOutlineView */,
+				F0C8D79128AC5EB2002E864D /* RichTextKit */,
 			);
 			productName = Space;
 			productReference = F086C30928A5F8E200C0788A /* Space.app */;
@@ -223,7 +306,7 @@
 			);
 			mainGroup = F086C30028A5F8E200C0788A;
 			packageReferences = (
-				F0967C8228AB595600C9792C /* XCRemoteSwiftPackageReference "OutlineView" */,
+				F0C8D79028AC5EB2002E864D /* XCRemoteSwiftPackageReference "RichTextKit" */,
 			);
 			productRefGroup = F086C30A28A5F8E200C0788A /* Products */;
 			projectDirPath = "";
@@ -243,6 +326,7 @@
 			files = (
 				F086C31428A5F8E300C0788A /* Preview Assets.xcassets in Resources */,
 				F086C31128A5F8E300C0788A /* Assets.xcassets in Resources */,
+				F0967C9F28AC3D3800C9792C /* SpaceTerminology.sdef in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -267,8 +351,18 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F0C8D79428AC5EF0002E864D /* RichTextEditorView.swift in Sources */,
+				F0967C8828AB93DA00C9792C /* SidebarFileTree.swift in Sources */,
+				F0967C9328AC186D00C9792C /* SidebarView.swift in Sources */,
+				F0967C8D28AB955900C9792C /* FileItem.swift in Sources */,
+				F0967C9828AC1A0900C9792C /* FileTable.swift in Sources */,
 				F086C30F28A5F8E200C0788A /* ContentView.swift in Sources */,
-				F086C30D28A5F8E200C0788A /* SpaceApp.swift in Sources */,
+				F0967C8F28AB965000C9792C /* WebView.swift in Sources */,
+				F0967C9A28AC2D8000C9792C /* DetailView.swift in Sources */,
+				F0967C8628AB930500C9792C /* QLImage.swift in Sources */,
+				F0967C9128AC17F000C9792C /* MainView.swift in Sources */,
+				F086C30D28A5F8E200C0788A /* Space.swift in Sources */,
+				F0967CA128AC3DDB00C9792C /* Scripts.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -423,7 +517,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Space/Space.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -432,6 +528,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Space/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = none;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -450,7 +548,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = Space/Space.entitlements;
+				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -459,6 +559,8 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Space/Info.plist;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
 				INFOPLIST_KEY_NSHumanReadableCopyright = none;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -586,21 +688,21 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F0967C8228AB595600C9792C /* XCRemoteSwiftPackageReference "OutlineView" */ = {
+		F0C8D79028AC5EB2002E864D /* XCRemoteSwiftPackageReference "RichTextKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/EncodiaDotCo/OutlineView";
+			repositoryURL = "https://github.com/danielsaidi/RichTextKit.git";
 			requirement = {
 				kind = upToNextMajorVersion;
-				minimumVersion = 0.0.1;
+				minimumVersion = 0.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F0967C8328AB595700C9792C /* EncodiaOutlineView */ = {
+		F0C8D79128AC5EB2002E864D /* RichTextKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F0967C8228AB595600C9792C /* XCRemoteSwiftPackageReference "OutlineView" */;
-			productName = EncodiaOutlineView;
+			package = F0C8D79028AC5EB2002E864D /* XCRemoteSwiftPackageReference "RichTextKit" */;
+			productName = RichTextKit;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
