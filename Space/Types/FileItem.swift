@@ -9,6 +9,7 @@ import Foundation
 import AppKit
 import UniformTypeIdentifiers
 
+// TODO add reference to annotation
 struct FileItem: Identifiable, Hashable, Equatable, Comparable {
 	static func < (lhs: FileItem, rhs: FileItem) -> Bool {
 		return lhs.name < rhs.name
@@ -16,6 +17,16 @@ struct FileItem: Identifiable, Hashable, Equatable, Comparable {
 	
 	var id: Self {self}
 	var url: URL
+	
+	// TODO rename annotation file at the same time
+	func rename(_ newURL: URL) -> Void {
+		do {
+			try fm.moveItem(
+				at: self.url,
+				to: newURL)
+//			self.url = newURL
+		} catch {}
+	}
 	
 	static func getChildren(url: URL) -> [FileItem] {
 		do {
@@ -79,11 +90,13 @@ struct FileItem: Identifiable, Hashable, Equatable, Comparable {
 	var type: UTType
 	var name: String
 	
-	init(url: URL, type: UTType?) {
+	init(url: URL, type: UTType? = nil) {
 		self.url = url
-		self.icon = ws.icon(for: type ?? UTType.content) // custom icons?
+		self.type = type
+		?? UTType(filenameExtension: url.pathExtension)
+		?? UTType.content
+		self.icon = ws.icon(for: self.type) // TODO custom icons?
 		self.name = url.lastPathComponent
-		self.type = type ?? UTType.content
 	}
 }
 

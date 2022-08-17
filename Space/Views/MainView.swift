@@ -114,9 +114,6 @@ struct MainView: View {
 				}.keyboardShortcut("n")
 			}
 		}
-		.onAppear() {
-			sidebarTarget = children.first!
-		}
 	}
 }
 

@@ -17,8 +17,7 @@ let _previewRootURL = URL(
 	fileURLWithPath: "/Users/chee/Documents/Notebooks/"
 ).resolvingSymlinksInPath()
 var _previewRootFile = FileItem(
-	url: _previewRootURL,
-	type: UTType.folder
+	url: _previewRootURL
 )
 
 

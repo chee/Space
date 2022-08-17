@@ -24,6 +24,9 @@ struct SidebarView: View {
 			}
 		}
 		.frame(idealWidth: 10, alignment: .leading)
+		.onAppear {
+			selection.insert(dirs.first!)
+		}
 	}
 }
 //
