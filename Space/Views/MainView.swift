@@ -32,6 +32,7 @@ struct MainView: View {
 	@State var sidebarVisible: Bool = true
 	@State var detailVisible: Bool = true
 	@State var tableVisible: Bool = true
+	@State var search = ""
 	
 	private func toggleSidebar() {
 		NSApp.keyWindow?
@@ -70,29 +71,23 @@ struct MainView: View {
 		sidebarTarget = FileItem(url: folderURL, type: UTType.folder)
 		tableTarget = FileItem(url: fileURL, type: UTType.html)
 	}
-	
+
 	var body: some View {
 		NavigationView {
 			SidebarView(dirs: children, choice: $sidebarTarget)
 				.listStyle(.sidebar)
 			VSplitView {
-				SpaceFileTable(
+				FileTable(
 					context: $sidebarTarget,
 					choice: $tableTarget,
-					openDirectory: setSidebarTarget
+					showDirectoryInSidebar: setSidebarTarget
 				).listStyle(.plain)
 				DetailView(file: $tableTarget).background()
 			}
 			.frame(minWidth: 400, alignment: .trailing)
 		}
+		.searchable(text: $search, placement: .toolbar)
 		.toolbar {
-			ToolbarItem(placement: .automatic) {
-				Button(action: {
-					print("lol, not actually")
-				}) {
-					Label("Search", systemImage: "magnifyingglass")
-				}.keyboardShortcut("f", modifiers: [.shift, .command])
-			}
 			ToolbarItem(placement: .navigation) {
 				Button(action: toggleSidebar) {
 					Label("Toggle sidebar", systemImage: "sidebar.left")

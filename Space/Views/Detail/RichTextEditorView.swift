@@ -8,7 +8,6 @@
 import SwiftUI
 import RichTextKit
 import UniformTypeIdentifiers
-import Ashton
 
 // lol?
 // https://stackoverflow.com/questions/57021722/swiftui-optional-textfield
@@ -33,6 +32,8 @@ extension NSAttributedString {
 		return nil
 	}
 }
+
+var debouncer: Timer?
 
 struct RichTextEditorView: View {
 	@Binding var file: FileItem?
@@ -111,17 +112,28 @@ struct RichTextEditorView: View {
 				if new == nil {
 					return
 				}
-				do {
-					let type = new!.type
-					if (Self.richTypes.contains(type)) {
-						try text = NSAttributedString(rtfData: file!.contents)
-					} else if (Self.htmlTypes.contains(type)) {
-						// TODO fancier html
-						text = NSAttributedString(html: file!.contents, documentAttributes: .none)!
-					} else {
-						return
+				// TODO figure out why this works
+				DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+					do {
+						let type = new!.type
+						if (Self.richTypes.contains(type)) {
+							try text = NSAttributedString(rtfData: file!.contents)
+						} else if (Self.htmlTypes.contains(type)) {
+							// TODO fancier html
+							text = NSAttributedString(html: file?.contents ?? Data(), documentAttributes: .none)!
+						} else {
+							return
+						}
+					} catch {}
+				}
+			}.onChange(of: text) {new in
+				// TODO figure out why text only changes once when editing starts
+				if file != nil && text != nil {
+					debouncer?.invalidate()
+					debouncer = Timer.scheduledTimer(withTimeInterval: 0.25, repeats: false) { _ in
+						save()
 					}
-				} catch {}
+				}
 			}
 	}
 }

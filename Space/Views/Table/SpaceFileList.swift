@@ -9,7 +9,7 @@ import SwiftUI
 import AppKit
 import Foundation
 
-struct SpaceFileTable: View {
+struct SpaceFileList: View {
 	@State private var selection = Set<FileItem>()
 	@Binding var context: FileItem?
 	@Binding var choice: FileItem?
@@ -49,12 +49,11 @@ struct SpaceFileTable: View {
 	var body: some View {
 		if let items = files {
 			List(items, selection: $selection) {file in
-				if renaming && selection.count == 1 && selection.first! == file {
-					
-					HStack {
-						Image(nsImage: file.icon)
-							.resizable()
-							.frame(width: 22, height: 22, alignment: .leading)
+				HStack {
+					Image(nsImage: file.icon)
+						.resizable()
+						.frame(width: 22, height: 22, alignment: .leading)
+					if renaming && choice == file {
 						TextField(file.name, text: $newName)
 							.focused($focusedFile, equals: file)
 							.frame(alignment: .leading)
@@ -76,33 +75,24 @@ struct SpaceFileTable: View {
 									quitRenaming(file)
 								}
 							}
-						Text(file.type.identifier)
-						Spacer()
+					} else {
+						Text(file.name)
 					}
-				} else {
-					HStack {
-						Image(nsImage: file.icon)
-							.resizable()
-							.frame(width: 22, height: 22, alignment: .leading)
-						Text(file.name).frame(alignment: .leading)
-						Text(file.type.identifier)
-						Spacer()
+					Text(file.type.identifier)
+				}
+				.contentShape(Rectangle())
+				.onDoubleClick {
+					if choice != nil && !renaming {
+						ws.open(choice!.url)
 					}
-					.contentShape(Rectangle())
-					.onDoubleClick {
-						if selection.count == 1 {
-							ws.open(selection.first!.url)
-						}
-					}
-					.contextMenu {
-						Button("Rename", action: {
-							startRenaming(file)
-						})
-						.keyboardShortcut(.defaultAction)
-						Button("Show in Finder", action: {
-							showInFinder(file)
-						})
-					}
+				}.contextMenu {
+					Button("Rename", action: {
+						startRenaming(selection.first!)
+					})
+					.keyboardShortcut(.defaultAction)
+					Button("Show in Finder", action: {
+						showInFinder(selection.first!)
+					})
 				}
 			}.listStyle(.bordered(alternatesRowBackgrounds: true))
 		}
