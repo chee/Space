@@ -32,15 +32,15 @@ struct SpaceDirectoryView: View {
 					Text(file.type.localizedDescription ?? file.type.description)
 				}
 				.contentShape(Rectangle())
-				//			.onDoubleClick {
-				//				if choice != nil && focusedFile == nil {
-				//					if choice!.isFolder {
-				//						context = choice!
-				//					} else {
-				//						ws.open(choice!.url)
-				//					}
-				//				}
-				//			}
+				.onDoubleClick {
+					if let choice = choice {
+						if choice.isFolder {
+							// TODO set navigation here
+						} else {
+							ws.open(choice.url)
+						}
+					}
+				}
 			}
 			.onChange(of: selection) {_ in
 				choice = nil
@@ -49,8 +49,8 @@ struct SpaceDirectoryView: View {
 				}
 			}
 			.listStyle(.bordered(alternatesRowBackgrounds: true))
-			if selection.count == 1 {
-				DetailView(file: selection.first!)
+			if choice != nil {
+				DetailView(file: Binding($choice)!)
 			} else {
 				Text("Select a file").frame(
 					maxWidth: .infinity,

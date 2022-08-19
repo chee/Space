@@ -21,7 +21,7 @@ struct MainView: View {
 			url: rootURL,
 			type: UTType.folder
 		)
-		files = SpaceFile.getChildren(url: rootURL)
+		files = rootFile.getChildren()
 	}
 	
 	private func toggleSidebar() {

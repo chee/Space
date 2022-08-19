@@ -10,27 +10,20 @@ import UniformTypeIdentifiers
 import RichTextKit
 
 struct DetailView: View {
-	let file: SpaceFile
+	@Binding var file: SpaceFile
 	static let richTypes = RichTextEditorView.supportedTypes
 	// TODO code editor for plainTypes? embed emacs lol?
 	static let plainTypes: [UTType] = [.plainText]
-	var annotationURL: URL {
-		file.url.appendingPathExtension("annotation")
-	}
-	
-	func annotationExists () -> Bool {
-		return fm.fileExists(atPath: annotationURL.path)
-	}
 	
 	var body: some View {
 		HSplitView {
 			if Self.richTypes.contains(file.type) {
-				RichTextEditorView(url: file.url)
+				RichTextEditorView(file: $file)
 			} else {
 				QuicklookDetailView(url:file.url).background()
 			}
-			if annotationExists() {
-				RichTextEditorView(url: file.url)
+			if file.annotationExists {
+				RichTextEditorView(file: $file)
 			}
 		}
 	}

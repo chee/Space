@@ -56,13 +56,36 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		}
 	}
 	
+	func getChildren() -> [SpaceFile] {
+		Self.getChildren(url: self.url)
+	}
+	
+	func getContents() -> Data? {
+		fm.contents(atPath: url.path)
+	}
+	
+	var annotationURL: URL {
+		url.appendingPathExtension("annotation")
+	}
+	
+	var annotationExists: Bool {
+		fm.fileExists(atPath: annotationURL.path)
+	}
+	
 	// TODO rename annotation file at the same time
 	func rename(_ newURL: URL) -> Void {
 		do {
 			try fm.moveItem(
 				at: self.url,
-				to: newURL)
-//			self.url = newURL
+				to: newURL
+			)
+			
+			if annotationExists {
+				try fm.moveItem(
+					at: annotationURL,
+					to: newURL.appendingPathExtension("annotation")
+				)
+			}
 		} catch {}
 	}
 	

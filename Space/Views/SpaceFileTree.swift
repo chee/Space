@@ -23,7 +23,7 @@ struct SpaceFileTree: View {
 				isExpanded: $isExpanded,
 				content: {
 					if isExpanded {
-						ForEach(SpaceFile.getChildren(url: file.url), id: \.self.id) { childNode in
+						ForEach(file.getChildren(), id: \.self.id) { childNode in
 							SpaceFileTree(file: childNode, isExpanded: false)
 						}
 					}
