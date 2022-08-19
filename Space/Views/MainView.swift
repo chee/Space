@@ -11,9 +11,7 @@ import UniformTypeIdentifiers
 struct MainView: View {
 	var rootURL: URL
 	var rootFile: SpaceFile
-	var files: [SpaceFile]
 	@State var search = ""
-	@State var selection: URL? = nil
 	
 	init(_ rootURL: URL) {
 		self.rootURL = rootURL
@@ -21,7 +19,6 @@ struct MainView: View {
 			url: rootURL,
 			type: UTType.folder
 		)
-		files = rootFile.getChildren()
 	}
 	
 	private func toggleSidebar() {
@@ -33,41 +30,52 @@ struct MainView: View {
 	}
 	
 	
-//	func createFile() {
-//		var folderURL: URL
-//		if tableChoice != nil {
-//			if tableChoice!.isFolder {
-//				folderURL = tableChoice!.url
-//			} else {
-//				folderURL = tableChoice!.url.deletingLastPathComponent()
-//			}
-//		} else if sidebarChoice != nil {
-//			folderURL = sidebarChoice!.url
-//		} else {
-//			folderURL = rootURL
-//		}
-//		let fileURL = folderURL.appendingPathComponent("New File.html")
-//		let path = fileURL.path
-//		fm.createFile(atPath: path, contents: nil)
-//		sidebarChoice = SpaceFile(url: folderURL, type: UTType.folder)
-//		tableChoice = SpaceFile(url: fileURL, type: UTType.html)
-//	}
-
+	//	func createFile() {
+	//		var folderURL: URL
+	//		if tableChoice != nil {
+	//			if tableChoice!.isFolder {
+	//				folderURL = tableChoice!.url
+	//			} else {
+	//				folderURL = tableChoice!.url.deletingLastPathComponent()
+	//			}
+	//		} else if sidebarChoice != nil {
+	//			folderURL = sidebarChoice!.url
+	//		} else {
+	//			folderURL = rootURL
+	//		}
+	//		let fileURL = folderURL.appendingPathComponent("New File.html")
+	//		let path = fileURL.path
+	//		fm.createFile(atPath: path, contents: nil)
+	//		sidebarChoice = SpaceFile(url: folderURL, type: UTType.folder)
+	//		tableChoice = SpaceFile(url: fileURL, type: UTType.html)
+	//	}
+	@State private var sidebarSelection: SpaceFile.ID?
+	@State private var listSelection: SpaceFile.ID?
+	@State private var columnVisibility = NavigationSplitViewVisibility.all
+	
 	var body: some View {
-		NavigationView {
-			List(files) {file in
+		NavigationSplitView(columnVisibility: $columnVisibility) {
+			List([rootFile], selection: $sidebarSelection) {file in
 				SpaceFileTree(file: file, isExpanded: true)
 			}
-			Text("Select a folder in the sidebar")
-		}
-		.searchable(text: $search, placement: .toolbar)
-		.toolbar {
-			ToolbarItem(placement: .navigation) {
-				Button(action: toggleSidebar) {
-					Label("Toggle sidebar", systemImage: "sidebar.left")
-				}.keyboardShortcut("\\")
+		} content: {
+			if sidebarSelection == nil {
+				Text("lol")
+			} else {
+				SpaceDirectoryView(
+					dir: rootFile.find(sidebarSelection!)!,
+					selection: $listSelection
+				)
+			}
+		} detail: {
+			if listSelection == nil {
+				Text("hehe")
+			} else {
+				DetailView(file: rootFile.find(listSelection!)!)
 			}
 		}
+		.navigationSplitViewStyle(.prominentDetail)
+		.searchable(text: $search, placement: .toolbar)
 	}
 }
 

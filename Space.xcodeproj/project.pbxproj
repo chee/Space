@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F0388E6F28AE21760077D651 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0388E6E28AE21760077D651 /* Binding+onChange.swift */; };
+		F057CAD028B01F640013528F /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F057CACF28B01F640013528F /* RichTextKit */; };
 		F06EC71528AF21B6005049ED /* SpaceDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06EC71428AF21B6005049ED /* SpaceDirectoryView.swift */; };
 		F06EC71828AF55FD005049ED /* NSAttributedString+asHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06EC71728AF55FD005049ED /* NSAttributedString+asHTML.swift */; };
 		F086C30D28A5F8E200C0788A /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C30C28A5F8E200C0788A /* Space.swift */; };
@@ -25,7 +26,6 @@
 		F0967C9A28AC2D8000C9792C /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C9928AC2D8000C9792C /* DetailView.swift */; };
 		F0967C9F28AC3D3800C9792C /* Terminology.sdef in Resources */ = {isa = PBXBuildFile; fileRef = F0967C9E28AC3D3800C9792C /* Terminology.sdef */; };
 		F0967CA128AC3DDB00C9792C /* Scripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967CA028AC3DDB00C9792C /* Scripts.swift */; };
-		F0C8D79228AC5EB2002E864D /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F0C8D79128AC5EB2002E864D /* RichTextKit */; };
 		F0C8D79428AC5EF0002E864D /* RichTextEditorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C8D79328AC5EF0002E864D /* RichTextEditorView.swift */; };
 		F0C8D7A128ACF048002E864D /* View+DoubleClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C8D7A028ACF048002E864D /* View+DoubleClick.swift */; };
 /* End PBXBuildFile section */
@@ -80,7 +80,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F0C8D79228AC5EB2002E864D /* RichTextKit in Frameworks */,
+				F057CAD028B01F640013528F /* RichTextKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -177,8 +177,8 @@
 			isa = PBXGroup;
 			children = (
 				F0967C9528AC19BC00C9792C /* Detail */,
-				F0967C8728AB93DA00C9792C /* SpaceFileTree.swift */,
 				F06EC71428AF21B6005049ED /* SpaceDirectoryView.swift */,
+				F0967C8728AB93DA00C9792C /* SpaceFileTree.swift */,
 				F0967C9028AC17F000C9792C /* MainView.swift */,
 			);
 			path = Views;
@@ -229,7 +229,7 @@
 			);
 			name = Space;
 			packageProductDependencies = (
-				F0C8D79128AC5EB2002E864D /* RichTextKit */,
+				F057CACF28B01F640013528F /* RichTextKit */,
 			);
 			productName = Space;
 			productReference = F086C30928A5F8E200C0788A /* Space.app */;
@@ -279,7 +279,7 @@
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1340;
-				LastUpgradeCheck = 1340;
+				LastUpgradeCheck = 1400;
 				TargetAttributes = {
 					F086C30828A5F8E200C0788A = {
 						CreatedOnToolsVersion = 13.4.1;
@@ -304,7 +304,7 @@
 			);
 			mainGroup = F086C30028A5F8E200C0788A;
 			packageReferences = (
-				F0C8D79028AC5EB2002E864D /* XCRemoteSwiftPackageReference "RichTextKit" */,
+				F057CACE28B01F640013528F /* XCRemoteSwiftPackageReference "RichTextKit" */,
 			);
 			productRefGroup = F086C30A28A5F8E200C0788A /* Products */;
 			projectDirPath = "";
@@ -432,6 +432,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
@@ -449,7 +450,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -492,6 +493,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -503,7 +505,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				MACOSX_DEPLOYMENT_TARGET = 12.3;
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = macosx;
@@ -523,6 +525,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Space/Preview Content\"";
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -535,6 +538,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = party.chee.Space;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -554,6 +558,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_ASSET_PATHS = "\"Space/Preview Content\"";
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -566,6 +571,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
+				MACOSX_DEPLOYMENT_TARGET = 13.0;
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = party.chee.Space;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -581,6 +587,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -600,6 +607,7 @@
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				GENERATE_INFOPLIST_FILE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
@@ -618,6 +626,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -635,6 +644,7 @@
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
+				DEAD_CODE_STRIPPING = YES;
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				GENERATE_INFOPLIST_FILE = YES;
 				MARKETING_VERSION = 1.0;
@@ -688,7 +698,7 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F0C8D79028AC5EB2002E864D /* XCRemoteSwiftPackageReference "RichTextKit" */ = {
+		F057CACE28B01F640013528F /* XCRemoteSwiftPackageReference "RichTextKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/danielsaidi/RichTextKit.git";
 			requirement = {
@@ -699,9 +709,9 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F0C8D79128AC5EB2002E864D /* RichTextKit */ = {
+		F057CACF28B01F640013528F /* RichTextKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F0C8D79028AC5EB2002E864D /* XCRemoteSwiftPackageReference "RichTextKit" */;
+			package = F057CACE28B01F640013528F /* XCRemoteSwiftPackageReference "RichTextKit" */;
 			productName = RichTextKit;
 		};
 /* End XCSwiftPackageProductDependency section */

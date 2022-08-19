@@ -12,10 +12,9 @@ import UniformTypeIdentifiers
 
 struct SpaceFileTree: View {
 	var file: SpaceFile
-	@State var isExpanded: Bool = false
+	@State var isExpanded: Bool = true
 	@State var choice: SpaceFile?
 	@State var context: SpaceFile?
-	@State var selection: URL? = nil
 	
 	var body: some View {
 		if file.isFolder {
@@ -23,13 +22,13 @@ struct SpaceFileTree: View {
 				isExpanded: $isExpanded,
 				content: {
 					if isExpanded {
-						ForEach(file.getChildren(), id: \.self.id) { childNode in
+						ForEach(file.children, id: \.self.id) { childNode in
 							SpaceFileTree(file: childNode, isExpanded: false)
 						}
 					}
 				},
 				label: {
-					NavigationLink(destination: SpaceDirectoryView(url: file.url)) {
+					NavigationLink(value: file.id) {
 						Image(nsImage: file.icon)
 							.resizable(resizingMode: .tile)
 							.frame(width: 20, height: 20, alignment: .center)
