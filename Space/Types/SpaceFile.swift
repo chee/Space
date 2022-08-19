@@ -11,12 +11,16 @@ import UniformTypeIdentifiers
 
 // TODO add reference to annotation
 struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
+	static let richTypes: [UTType] = [.rtf, .rtfd, .flatRTFD]
+	static let htmlTypes: [UTType] = [.html]
+	
 	var id: Self {self}
 	var url: URL
 	var isFolder: Bool { self.type == UTType.folder }
 	var icon: NSImage
 	var type: UTType
 	var name: String
+	
 	static func ==(lhs: Self, rhs: Self) -> Bool {
 		lhs.url == rhs.url
 	}
@@ -70,6 +74,28 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 	
 	var annotationExists: Bool {
 		fm.fileExists(atPath: annotationURL.path)
+	}
+	
+	var annotationFile: SpaceFile {
+		SpaceFile(url: annotationURL, type: UTType.rtf)
+	}
+	
+	func save(_ attributedString: NSAttributedString) {
+		if Self.richTypes.contains(type) {
+			do {
+				let rtf = try attributedString.richTextRtfData()
+				try rtf.write(to: url)
+			} catch {
+				print("failed to write file :o")
+			}
+		} else if Self.htmlTypes.contains(type) {
+			let html = attributedString.asHTML!
+			do {
+				try html.data(using: .utf8)?.write(to: url)
+			} catch {
+				print("failed to write file")
+			}
+		}
 	}
 	
 	// TODO rename annotation file at the same time

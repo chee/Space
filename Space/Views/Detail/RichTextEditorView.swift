@@ -18,58 +18,25 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
 	)
 }
 
-extension NSAttributedString {
-	public var asHtml: String? {
-		let documentAttributes = [NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.html]
-		do {
-			let htmlData = try data(from: NSMakeRange(0, length), documentAttributes: documentAttributes)
-			if let htmlString = String(data: htmlData, encoding: String.Encoding.utf8) {
-				return htmlString
-			}
-		} catch {
-			
-		}
-		return nil
-	}
-}
-
 struct RichTextEditorView: View {
 	@Binding var file: SpaceFile
 	@State var ready = false
 	@State var richTextContent = NSAttributedString(string: "this should never be")
 	@StateObject var context = RichTextContext()
 	
-	static let richTypes: [UTType] = [.rtf, .rtfd, .flatRTFD]
-	static let htmlTypes: [UTType] = [.html]
-	static let supportedTypes: [UTType] = richTypes + htmlTypes
+	static let supportedTypes: [UTType] = SpaceFile.richTypes + SpaceFile.htmlTypes
 	
 	func save() {
-		//		if let file = file, let text = text {
-		//			if Self.richTypes.contains(file.type) {
-		//				do {
-		//					let rtf = try text.richTextRtfData()
-		//					try rtf.write(to: file.url)
-		//				} catch {
-		//					print("failed to write file :o")
-		//				}
-		//			} else if Self.htmlTypes.contains(file.type) {
-		//				let html = text.asHtml!
-		//				do {
-		//					try html.data(using: .utf8)?.write(to: file.url)
-		//				} catch {
-		//					print("failed to write file")
-		//				}
-		//			}
-		//		}
+		file.save(richTextContent)
 	}
 	
 	func updateText() {
 		do {
 			// TODO handle failure
 			let contents = file.getContents()!
-			if (Self.richTypes.contains(file.type)) {
+			if (SpaceFile.richTypes.contains(file.type)) {
 				richTextContent = try NSAttributedString(rtfData: contents)
-			} else if (Self.htmlTypes.contains(file.type)) {
+			} else if (SpaceFile.htmlTypes.contains(file.type)) {
 				// TODO fancier html
 				richTextContent = NSAttributedString(html: contents, documentAttributes: .none)!
 			}
@@ -79,7 +46,23 @@ struct RichTextEditorView: View {
 	}
 	
 	var body: some View {
-		HStack {
+		// there must be a better way.
+		// (the richtext doesn't refresh properly, i'm using text because it has
+		// a normal background colour)
+		ZStack {
+			Text("")
+				.frame(maxWidth: .infinity, maxHeight: .infinity)
+				.onChange(of: file) {_ in
+					ready = false
+					DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
+						updateText()
+					}
+				}
+				.onAppear {
+					ready = false
+					updateText()
+				}
+			
 			if ready {
 				RichTextEditor(text: $richTextContent, context: context) {editor in
 					// You can customize the native text view here
@@ -119,19 +102,6 @@ struct RichTextEditorView: View {
 						}.keyboardShortcut("s")
 					}
 				}
-			}
-		}
-		.onChange(of: file) {_ in
-			ready = false
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-				updateText()
-			}
-		}
-		.onAppear {
-			print("i have made my appearence")
-			ready = false
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
-				updateText()
 			}
 		}
 	}

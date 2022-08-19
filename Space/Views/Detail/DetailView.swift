@@ -11,13 +11,12 @@ import RichTextKit
 
 struct DetailView: View {
 	@Binding var file: SpaceFile
-	static let richTypes = RichTextEditorView.supportedTypes
 	// TODO code editor for plainTypes? embed emacs lol?
 	static let plainTypes: [UTType] = [.plainText]
 	
 	var body: some View {
 		HSplitView {
-			if Self.richTypes.contains(file.type) {
+			if RichTextEditorView.supportedTypes.contains(file.type) {
 				RichTextEditorView(file: $file)
 			} else {
 				QuicklookDetailView(url:file.url).background()

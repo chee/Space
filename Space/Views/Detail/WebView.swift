@@ -16,7 +16,12 @@ struct WebView: NSViewRepresentable {
 	
 	func makeNSView(context: Context) -> WKWebView {
 		let webView = WKWebView(frame: .zero, configuration: .init())
-		webView.load(data, mimeType: contentType, characterEncodingName: "UTF8", baseURL: FileManager.default.temporaryDirectory)
+		webView.load(
+			data,
+			mimeType: contentType,
+			characterEncodingName: "UTF8",
+			baseURL: FileManager.default.temporaryDirectory
+		)
 		return webView
 	}
 	
