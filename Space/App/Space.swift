@@ -16,7 +16,7 @@ let app = NSApplication.shared
 let _previewRootURL = URL(
 	fileURLWithPath: "/Users/chee/Documents/Notebooks/"
 ).resolvingSymlinksInPath()
-var _previewRootFile = FileItem(
+var _previewRootFile = SpaceFile(
 	url: _previewRootURL
 )
 

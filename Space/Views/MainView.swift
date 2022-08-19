@@ -10,29 +10,19 @@ import UniformTypeIdentifiers
 
 struct MainView: View {
 	var rootURL: URL
-	var rootFile: FileItem
-	var children: [FileItem]
+	var rootFile: SpaceFile
+	var files: [SpaceFile]
+	@State var search = ""
+	@State var selection: URL? = nil
 	
 	init(_ rootURL: URL) {
 		self.rootURL = rootURL
-		rootFile = FileItem(
+		rootFile = SpaceFile(
 			url: rootURL,
 			type: UTType.folder
 		)
-		children = rootFile.children
+		files = SpaceFile.getChildren(url: rootURL)
 	}
-	
-	func setSidebarTarget(_ target: FileItem) {
-		sidebarTarget = target
-	}
-	
-
-	@State var sidebarTarget: FileItem?
-	@State var tableTarget: FileItem?
-	@State var sidebarVisible: Bool = true
-	@State var detailVisible: Bool = true
-	@State var tableVisible: Bool = true
-	@State var search = ""
 	
 	private func toggleSidebar() {
 		NSApp.keyWindow?
@@ -42,49 +32,33 @@ struct MainView: View {
 			), with: nil)
 	}
 	
-	func toggleDetail() {
-		detailVisible = !detailVisible
-	}
 	
-	func toggleTable() {
-		tableVisible = !tableVisible
-		toggleDetail()
-		toggleDetail()
-	}
-	
-	func createFile() {
-		var folderURL: URL
-		if tableTarget != nil {
-			if tableTarget!.isFolder {
-				folderURL = tableTarget!.url
-			} else {
-				folderURL = tableTarget!.url.deletingLastPathComponent()
-			}
-		} else if sidebarTarget != nil {
-			folderURL = sidebarTarget!.url
-		} else {
-			folderURL = rootURL
-		}
-		let fileURL = folderURL.appendingPathComponent("New File.html")
-		let path = fileURL.path
-		fm.createFile(atPath: path, contents: nil)
-		sidebarTarget = FileItem(url: folderURL, type: UTType.folder)
-		tableTarget = FileItem(url: fileURL, type: UTType.html)
-	}
+//	func createFile() {
+//		var folderURL: URL
+//		if tableChoice != nil {
+//			if tableChoice!.isFolder {
+//				folderURL = tableChoice!.url
+//			} else {
+//				folderURL = tableChoice!.url.deletingLastPathComponent()
+//			}
+//		} else if sidebarChoice != nil {
+//			folderURL = sidebarChoice!.url
+//		} else {
+//			folderURL = rootURL
+//		}
+//		let fileURL = folderURL.appendingPathComponent("New File.html")
+//		let path = fileURL.path
+//		fm.createFile(atPath: path, contents: nil)
+//		sidebarChoice = SpaceFile(url: folderURL, type: UTType.folder)
+//		tableChoice = SpaceFile(url: fileURL, type: UTType.html)
+//	}
 
 	var body: some View {
 		NavigationView {
-			SidebarView(dirs: children, choice: $sidebarTarget)
-				.listStyle(.sidebar)
-			VSplitView {
-				FileTable(
-					context: $sidebarTarget,
-					choice: $tableTarget,
-					showDirectoryInSidebar: setSidebarTarget
-				).listStyle(.plain)
-				DetailView(file: $tableTarget).background()
+			List(files) {file in
+				SpaceFileTree(file: file, isExpanded: true)
 			}
-			.frame(minWidth: 400, alignment: .trailing)
+			Text("Select a folder in the sidebar")
 		}
 		.searchable(text: $search, placement: .toolbar)
 		.toolbar {
@@ -92,21 +66,6 @@ struct MainView: View {
 				Button(action: toggleSidebar) {
 					Label("Toggle sidebar", systemImage: "sidebar.left")
 				}.keyboardShortcut("\\")
-			}
-//			ToolbarItem(placement: .navigation) {
-//				Button(action: toggleTable) {
-//					Label("Toggle table", systemImage: "tablecells")
-//				}.keyboardShortcut("'")
-//			}
-//			ToolbarItem(placement: .navigation) {
-//				Button(action: toggleDetail) {
-//					Label("Toggle detail view", systemImage: "rectangle.bottomhalf.filled")
-//				}.keyboardShortcut(";")
-//			}
-			ToolbarItem(placement: .navigation) {
-				Button(action: createFile) {
-					Label("New file", systemImage: "square.and.pencil")
-				}.keyboardShortcut("n")
 			}
 		}
 	}

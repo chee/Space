@@ -10,30 +10,27 @@ import AppKit
 import UniformTypeIdentifiers
 
 // TODO add reference to annotation
-struct FileItem: Identifiable, Hashable, Equatable, Comparable {
-	static func < (lhs: FileItem, rhs: FileItem) -> Bool {
+struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
+	var id: Self {self}
+	var url: URL
+	var isFolder: Bool { self.type == UTType.folder }
+	var icon: NSImage
+	var type: UTType
+	var name: String
+	static func ==(lhs: Self, rhs: Self) -> Bool {
+		lhs.url == rhs.url
+	}
+	
+	static func < (lhs: SpaceFile, rhs: SpaceFile) -> Bool {
 		return lhs.name < rhs.name
 	}
 	
-	var id: Self {self}
-	var url: URL
-	
-	// TODO rename annotation file at the same time
-	func rename(_ newURL: URL) -> Void {
-		do {
-			try fm.moveItem(
-				at: self.url,
-				to: newURL)
-//			self.url = newURL
-		} catch {}
-	}
-	
-	static func getChildren(url: URL) -> [FileItem] {
+	static func getChildren(url: URL) -> [SpaceFile] {
 		do {
 			let keys = Array<URLResourceKey>([
 				.contentTypeKey,
 			])
-			var children: [FileItem] = []
+			var children: [SpaceFile] = []
 			for fileUrl in try fm.contentsOfDirectory(
 				at: url,
 				includingPropertiesForKeys: keys,
@@ -48,7 +45,7 @@ struct FileItem: Identifiable, Hashable, Equatable, Comparable {
 				if (["plist", "annotation"].contains(fileUrl.pathExtension)) {
 					continue
 				}
-				children.append(FileItem(
+				children.append(SpaceFile(
 					url: fileUrl,
 					type: contentType
 				))
@@ -59,36 +56,15 @@ struct FileItem: Identifiable, Hashable, Equatable, Comparable {
 		}
 	}
 	
-	lazy var children: [FileItem] = {
-		if _children == nil {
-			loadChildren()
-		}
-		return _children!
-	}()
-
-	private var _children: [FileItem]?
-	
-	mutating func loadChildren() -> Void {
-		_children = FileItem.getChildren(url: url).sorted()
+	// TODO rename annotation file at the same time
+	func rename(_ newURL: URL) -> Void {
+		do {
+			try fm.moveItem(
+				at: self.url,
+				to: newURL)
+//			self.url = newURL
+		} catch {}
 	}
-	
-	lazy var contents: Data = {
-		if _contents == nil {
-			loadContents()
-		}
-		return _contents!
-	}()
-	
-	private var _contents: Data?
-	
-	mutating func loadContents() -> Void {
-		_contents = fm.contents(atPath: url.path)
-	}
-	
-	var isFolder: Bool { self.type == UTType.folder }
-	var icon: NSImage
-	var type: UTType
-	var name: String
 	
 	init(url: URL, type: UTType? = nil) {
 		self.url = url
