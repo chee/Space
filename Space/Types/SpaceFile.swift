@@ -10,18 +10,22 @@ import AppKit
 import UniformTypeIdentifiers
 
 // TODO add reference to annotation
-struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
+class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable {
 	static let richTypes: [UTType] = [.rtf, .rtfd, .flatRTFD]
 	static let htmlTypes: [UTType] = [.html]
 	
-	var id: Self {self}
+	var id: URL {url}
 	var url: URL
 	var isFolder: Bool { self.type == UTType.folder }
 	var icon: NSImage
 	var type: UTType
 	var name: String
 	
-	static func ==(lhs: Self, rhs: Self) -> Bool {
+	func hash(into hasher: inout Hasher) {
+		return hasher.combine(ObjectIdentifier(self))
+	}
+	
+	static func ==(lhs: SpaceFile, rhs: SpaceFile) -> Bool {
 		lhs.url == rhs.url
 	}
 	
@@ -64,9 +68,47 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		Self.getChildren(url: self.url)
 	}
 	
+	lazy var children = {
+		getChildren()
+	}()
+	
+	func find(_ id: ID) -> SpaceFile? {
+		if self.id == id {
+			return self
+		}
+		
+		for child in children {
+			if let match = child.find(id) {
+				return match
+			}
+		}
+		
+		return nil
+	}
+	
+	
+	@Published var richText = NSAttributedString(string: "")
+	
+	func loadRichText() {
+		do {
+			// TODO handle failure
+			if (SpaceFile.richTypes.contains(self.type)) {
+				richText = try NSAttributedString(rtfData: contents!)
+			} else if (SpaceFile.htmlTypes.contains(type)) {
+				// TODO fancier html
+				richText = NSAttributedString(html: contents!, documentAttributes: .none)!
+			}
+		} catch {
+		}
+	}
+	
 	func getContents() -> Data? {
 		fm.contents(atPath: url.path)
 	}
+	
+	lazy var contents = {
+		getContents()
+	}()
 	
 	var annotationURL: URL {
 		url.appendingPathExtension("annotation")
@@ -80,16 +122,22 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		SpaceFile(url: annotationURL, type: UTType.rtf)
 	}
 	
-	func save(_ attributedString: NSAttributedString) {
+	func save() {
+		print("saving")
+		print(type)
 		if Self.richTypes.contains(type) {
 			do {
-				let rtf = try attributedString.richTextRtfData()
+				print("saving rich text")
+				let rtf = try richText.richTextRtfData()
+				print("writing")
+				print(rtf)
 				try rtf.write(to: url)
+				print("done")
 			} catch {
 				print("failed to write file :o")
 			}
 		} else if Self.htmlTypes.contains(type) {
-			let html = attributedString.asHTML!
+			let html = richText.asHTML!
 			do {
 				try html.data(using: .utf8)?.write(to: url)
 			} catch {
