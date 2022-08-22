@@ -8,11 +8,12 @@ import Foundation
 import SwiftUI
 import AppKit
 import Quartz
+import QuickLookUI
 
-struct QuicklookDetailView: NSViewRepresentable {
+struct QuickLookDetailView: NSViewRepresentable {
 	var url: URL
 	
-	func makeNSView(context: NSViewRepresentableContext<QuicklookDetailView>) -> QLPreviewView {
+	func makeNSView(context: NSViewRepresentableContext<QuickLookDetailView>) -> QLPreviewView {
 		let preview = QLPreviewView(frame: .zero, style: .normal)
 		preview?.autostarts = false
 		preview?.previewItem = url as QLPreviewItem
@@ -20,8 +21,9 @@ struct QuicklookDetailView: NSViewRepresentable {
 		return preview ?? QLPreviewView()
 	}
 	
-	func updateNSView(_ nsView: QLPreviewView, context: NSViewRepresentableContext<QuicklookDetailView>) {
-		nsView.previewItem = url as QLPreviewItem
+	func updateNSView(_ qlview: QLPreviewView,
+context: NSViewRepresentableContext<QuickLookDetailView>) {
+		qlview.previewItem = url as QLPreviewItem
 	}
 	
 	typealias NSViewType = QLPreviewView
