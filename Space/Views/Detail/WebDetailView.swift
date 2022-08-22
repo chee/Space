@@ -10,7 +10,7 @@ import WebKit
 import AppKit
 import SwiftUI
 
-struct WebView: NSViewRepresentable {
+struct WebDetailView: NSViewRepresentable {
 	let data: Data
 	let contentType: String
 	

@@ -86,20 +86,32 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		return nil
 	}
 	
-	
-	@Published var richText = NSAttributedString(string: "")
-	
-	func loadRichText() {
+	@Published var richTextReady = false
+
+	lazy var richText = { () -> NSAttributedString? in
+		richTextReady = false
+		var content: NSAttributedString?
 		do {
 			// TODO handle failure
 			if (SpaceFile.richTypes.contains(self.type)) {
-				richText = try NSAttributedString(rtfData: contents!)
+				content = try NSAttributedString(rtfData: contents!)
 			} else if (SpaceFile.htmlTypes.contains(type)) {
 				// TODO fancier html
-				richText = NSAttributedString(html: contents!, documentAttributes: .none)!
+				content = NSAttributedString(html: contents!, documentAttributes: .none)!
 			}
 		} catch {
 		}
+		DispatchQueue.main.async {
+			self.richTextReady = true
+		}
+		return content
+	}()
+	
+	func showInFinder() {
+		ws.selectFile(
+			url.path,
+			inFileViewerRootedAtPath: url.path
+		)
 	}
 	
 	func getContents() -> Data? {
@@ -128,18 +140,18 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		if Self.richTypes.contains(type) {
 			do {
 				print("saving rich text")
-				let rtf = try richText.richTextRtfData()
+				let rtf = try richText?.richTextRtfData()
 				print("writing")
-				print(rtf)
-				try rtf.write(to: url)
+				print(rtf as Any)
+				try rtf?.write(to: url)
 				print("done")
 			} catch {
 				print("failed to write file :o")
 			}
 		} else if Self.htmlTypes.contains(type) {
-			let html = richText.asHTML!
+			let html = richText?.asHTML!
 			do {
-				try html.data(using: .utf8)?.write(to: url)
+				try html?.data(using: .utf8)?.write(to: url)
 			} catch {
 				print("failed to write file")
 			}

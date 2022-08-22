@@ -1,5 +1,4 @@
 //
-//  QLImage.swift
 //  Space
 //
 //  Created by chee on 2022-08-16.

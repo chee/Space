@@ -15,13 +15,16 @@ struct DetailView: View {
 	
 	var body: some View {
 		HSplitView {
-			if RichTextEditorView.supportedTypes.contains(file.type) {
-				RichTextEditorView(file)
+			if TextEditorDetailView.supportedTypes.contains(file.type) {
+				TextEditorDetailView(file)
+					.background()
 			} else {
-				QuicklookDetailView(url:file.url).background()
+				QuickLookDetailView(url:file.url)
+					.background()
 			}
 			if file.annotationExists {
-				RichTextEditorView(file.annotationFile)
+				TextEditorDetailView(file.annotationFile)
+					.background()
 			}
 		}
 	}

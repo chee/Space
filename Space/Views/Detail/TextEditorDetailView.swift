@@ -7,6 +7,7 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
+import RichTextKit
 
 // lol?
 // https://stackoverflow.com/questions/57021722/swiftui-optional-textfield
@@ -17,10 +18,10 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
 	)
 }
 
-struct RichTextEditorView: View {
+struct TextEditorDetailView: View {
 	@ObservedObject var file: SpaceFile
-	@State var ready = false
 	@StateObject var context = RichTextContext()
+	@State var ready = false
 	
 	static let supportedTypes: [UTType] = SpaceFile.richTypes + SpaceFile.htmlTypes
 	
@@ -29,23 +30,14 @@ struct RichTextEditorView: View {
 	}
 	
 	func save() {
-		debugPrint(file.url, file.type)
 		self.file.save()
 	}
 	
 	var body: some View {
 		ZStack {
-			// RichTextEditor really doesn't notice if i change the text. do i need to fork this?
-			if ready {
-				RichTextEditor(text: $file.richText, context: context) {editor in
-					// You can customize the native text view here
+			if Binding($file.richText) != nil {
+				RichTextEditor(text: Binding($file.richText)!, context: context) {editor in
 					editor.textContentInset = CGSize(width: 10, height: 20)
-				}.onChange(of: file) {_ in
-					ready = false
-					file.loadRichText()
-					DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-						ready = true
-					}
 				}
 				.background()
 				.toolbar {
@@ -81,12 +73,8 @@ struct RichTextEditorView: View {
 					}
 				}
 			}
-		}.onAppear {
-			file.loadRichText()
-			DispatchQueue.main.asyncAfter(deadline: .now() + 0.01) {
-				ready = true
-			}
-		}.frame(maxWidth: .infinity, maxHeight: .infinity)
+		}
+		.frame(maxWidth: .infinity, maxHeight: .infinity)
 	}
 }
 

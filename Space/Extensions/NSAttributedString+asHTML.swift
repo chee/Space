@@ -9,7 +9,8 @@ import Foundation
 
 extension NSAttributedString {
 	public var asHTML: String? {
-		let documentAttributes = [NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.html]
+		let documentAttributes = [
+			NSAttributedString.DocumentAttributeKey.documentType: NSAttributedString.DocumentType.html]
 		do {
 			let htmlData = try data(from: NSMakeRange(0, length), documentAttributes: documentAttributes)
 			if let htmlString = String(data: htmlData, encoding: String.Encoding.utf8) {
