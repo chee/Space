@@ -51,30 +51,17 @@ struct MainView: View {
 	//	}
 	@State private var sidebarSelection: SpaceFile.ID?
 	@State private var listSelection: SpaceFile.ID?
-	@State private var columnVisibility = NavigationSplitViewVisibility.all
 	
 	var body: some View {
-		NavigationSplitView(columnVisibility: $columnVisibility) {
-			List([rootFile], selection: $sidebarSelection) {file in
-				SpaceFileTree(file: file, isExpanded: true)
-			}
-		} content: {
-			if sidebarSelection == nil {
-				Text("lol")
-			} else {
-				SpaceDirectoryView(
-					dir: rootFile.find(sidebarSelection!)!,
-					selection: $listSelection
+		NavigationView {
+			List([rootFile]) {file in
+				SpaceFileTree(
+					file: file,
+					selection: $sidebarSelection,
+					isExpanded: true
 				)
 			}
-		} detail: {
-			if listSelection == nil {
-				Text("hehe")
-			} else {
-				DetailView(file: rootFile.find(listSelection!)!)
-			}
 		}
-		.navigationSplitViewStyle(.prominentDetail)
 		.searchable(text: $search, placement: .toolbar)
 	}
 }

@@ -6,7 +6,6 @@
 //
 
 import SwiftUI
-import RichTextKit
 import UniformTypeIdentifiers
 
 // lol?

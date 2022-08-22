@@ -7,7 +7,6 @@
 
 import SwiftUI
 import UniformTypeIdentifiers
-import RichTextKit
 
 struct DetailView: View {
 	let file: SpaceFile

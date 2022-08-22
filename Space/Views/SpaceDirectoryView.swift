@@ -42,14 +42,14 @@ import Foundation
 
 struct SpaceDirectoryView: View {
 	weak var dir: SpaceFile?
-	@Binding var selection: SpaceFile.ID?
+	@State private var selection: SpaceFile.ID?
+	let select: (SpaceFile.ID) -> Void
 	@FocusState private var focusedFile: SpaceFile?
 	@State private var choice: SpaceFile.ID?
 	
 	var body: some View {
-//		VSplitView {
+		VSplitView {
 			List(dir!.children, selection: $selection) {file in
-				NavigationLink(value: file.id) {
 					HStack {
 						Image(nsImage: file.icon)
 							.resizable()
@@ -59,25 +59,31 @@ struct SpaceDirectoryView: View {
 						Text(file.type.localizedDescription ?? file.type.description)
 					}
 					.contentShape(Rectangle())
+			}
+			.onDoubleClick {
+				if let selection = selection {
+					let target = dir?.find(selection)
+					if let target = target {
+						if target.isFolder {
+							select(target.id)
+						} else {
+							ws.open(target.url)
+						}
+					}
 				}
 			}
-//			.onChange(of: selection) {_ in
-//				choice = nil
-//				if selection.count == 1 {
-//					choice = selection.first!
-//				}
-//			}
 			.listStyle(.bordered(alternatesRowBackgrounds: true))
-//			if choice != nil {
-//				DetailView(file: dir!.find(choice!)!)
-//			} else {
-//				Text("Select a file").frame(
-//					maxWidth: .infinity,
-//					maxHeight: .infinity,
-//					alignment: .center
-//				)
-//			}
+			
+			if selection != nil {
+				DetailView(file: dir!.find(selection!)!).frame(maxHeight: .infinity)
+			} else {
+				Text("Select a file").frame(
+					maxWidth: .infinity,
+					maxHeight: .infinity,
+					alignment: .center
+				)
+			}
 		}
 	}
-//}
+}
 
