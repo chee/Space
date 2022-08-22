@@ -86,25 +86,18 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		return nil
 	}
 	
-	@Published var richTextReady = false
-
 	lazy var richText = { () -> NSAttributedString? in
-		richTextReady = false
-		var content: NSAttributedString?
 		do {
 			// TODO handle failure
 			if (SpaceFile.richTypes.contains(self.type)) {
-				content = try NSAttributedString(rtfData: contents!)
+				return try NSAttributedString(rtfData: contents!)
 			} else if (SpaceFile.htmlTypes.contains(type)) {
 				// TODO fancier html
-				content = NSAttributedString(html: contents!, documentAttributes: .none)!
+				return NSAttributedString(html: contents!, documentAttributes: .none)!
 			}
 		} catch {
 		}
-		DispatchQueue.main.async {
-			self.richTextReady = true
-		}
-		return content
+		return nil
 	}()
 	
 	func showInFinder() {

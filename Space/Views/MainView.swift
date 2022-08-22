@@ -59,8 +59,11 @@ struct MainView: View {
 					file: file,
 					selection: $sidebarSelection,
 					isExpanded: true
-				)
+				).onAppear {
+					sidebarSelection = rootFile.id
+				}
 			}
+			Text("Select an item in the sidebar")
 		}
 		.searchable(text: $search, placement: .toolbar)
 	}

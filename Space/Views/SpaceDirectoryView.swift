@@ -42,26 +42,35 @@ import Foundation
 
 struct SpaceDirectoryView: View {
 	weak var dir: SpaceFile?
-	@State private var selection: SpaceFile.ID?
+	@State private var selection = Set<SpaceFile.ID?>()
 	let select: (SpaceFile.ID) -> Void
 	@FocusState private var focusedFile: SpaceFile?
 	@State private var choice: SpaceFile.ID?
 	
 	var body: some View {
-		VSplitView {
+		NavigationView {
 			List(dir!.children, selection: $selection) {file in
-					HStack {
-						Image(nsImage: file.icon)
-							.resizable()
-							.frame(width: 22, height: 22, alignment: .leading)
-						Text(file.name)
-						Spacer()
-						Text(file.type.localizedDescription ?? file.type.description)
+				NavigationLink(
+					destination: DetailView(file: dir!.find(file.id)!),
+					label: {
+						HStack {
+							Image(nsImage: file.icon)
+								.resizable()
+								.frame(width: 22, height: 22, alignment: .leading)
+							Text(file.name)
+							Spacer()
+							Text(file.type.localizedDescription ?? file.type.description)
+						}
+						.contentShape(Rectangle())
 					}
-					.contentShape(Rectangle())
+				)
+				.contextMenu {
+					Button("Show in Finder", action: file.showInFinder)
+						.keyboardShortcut("o", modifiers: [.shift, .command])
+				}
 			}
 			.onDoubleClick {
-				if let selection = selection {
+				if let selection = selection.first, let selection = selection {
 					let target = dir?.find(selection)
 					if let target = target {
 						if target.isFolder {
@@ -74,15 +83,15 @@ struct SpaceDirectoryView: View {
 			}
 			.listStyle(.bordered(alternatesRowBackgrounds: true))
 			
-			if selection != nil {
-				DetailView(file: dir!.find(selection!)!).frame(maxHeight: .infinity)
-			} else {
-				Text("Select a file").frame(
-					maxWidth: .infinity,
-					maxHeight: .infinity,
-					alignment: .center
-				)
-			}
+//			if selection != nil {
+//
+//			} else {
+//				Text("Select a file").frame(
+//					maxWidth: .infinity,
+//					maxHeight: .infinity,
+//					alignment: .center
+//				)
+//			}
 		}
 	}
 }
