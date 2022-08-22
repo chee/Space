@@ -42,8 +42,14 @@ struct SpaceFileTree: View {
 							Image(nsImage: file!.icon)
 								.resizable(resizingMode: .tile)
 								.frame(width: 20, height: 20, alignment: .center)
-							Text(file!.name).lineLimit(1).frame(alignment: .center)
+							Text(file!.name)
+								.lineLimit(1)
+								.frame(alignment: .center)
 						})
+					.contextMenu {
+						Button("Show in Finder", action: file!.showInFinder)
+							.keyboardShortcut("o", modifiers: [.shift, .command])
+					}
 				}).onChange(of: selection) {[selection] next in
 					if next == nil && selection != nil {
 						self.selection = selection
