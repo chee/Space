@@ -40,59 +40,59 @@ import Foundation
 //	}
 //}
 
+
+let defaultDetail = AnyView(Color(.white).frame(maxHeight: .infinity))
+
 struct SpaceDirectoryView: View {
 	weak var dir: SpaceFile?
-	@State private var selection = Set<SpaceFile.ID?>()
+	@State private var selection = Set<SpaceFile.ID>()
 	let select: (SpaceFile.ID) -> Void
 	@FocusState private var focusedFile: SpaceFile?
-	@State private var choice: SpaceFile.ID?
+	@State var detail: AnyView = defaultDetail
 	
+	@ViewBuilder
 	var body: some View {
-		NavigationView {
-			List(dir!.children, selection: $selection) {file in
-				NavigationLink(
-					destination: DetailView(file: dir!.find(file.id)!),
-					label: {
-						HStack {
-							Image(nsImage: file.icon)
-								.resizable()
-								.frame(width: 22, height: 22, alignment: .leading)
-							Text(file.name)
-							Spacer()
-							Text(file.type.localizedDescription ?? file.type.description)
-						}
-						.contentShape(Rectangle())
-					}
-				)
+		VSplitView {
+			List(dir!.children, id: \.id, selection: $selection) {file in
+				HStack {
+					Image(nsImage: file.icon)
+						.resizable()
+						.frame(width: 22, height: 22, alignment: .leading)
+					Text(file.name)
+					Spacer()
+					Text(file.type.localizedDescription ?? file.type.description)
+				}
+				.contentShape(Rectangle())
 				.contextMenu {
 					Button("Show in Finder", action: file.showInFinder)
 						.keyboardShortcut("o", modifiers: [.shift, .command])
 				}
 			}
-			.onDoubleClick {
-				if let selection = selection.first, let selection = selection {
-					let target = dir?.find(selection)
-					if let target = target {
-						if target.isFolder {
-							select(target.id)
-						} else {
-							ws.open(target.url)
-						}
+			ZStack { detail }.frame(maxHeight: .infinity)
+		}
+		.onChange(of: selection) {_ in
+			self.detail = defaultDetail
+			// this causes a little flicker but means we always create a new view which is important for the richtext
+			DispatchQueue.main.async {
+				if selection.count == 1 {
+					self.detail = AnyView(DetailView(file: dir!.find(selection.first!)!))
+				}
+			}
+		}
+		.onDoubleClick {
+			if let selection = selection.first {
+				let target = dir?.find(selection)
+				if let target = target {
+					if target.isFolder {
+						select(target.id)
+					} else {
+						ws.open(target.url)
 					}
 				}
 			}
-			.listStyle(.bordered(alternatesRowBackgrounds: true))
-			
-//			if selection != nil {
-//
-//			} else {
-//				Text("Select a file").frame(
-//					maxWidth: .infinity,
-//					maxHeight: .infinity,
-//					alignment: .center
-//				)
-//			}
 		}
+		.listStyle(.bordered(alternatesRowBackgrounds: true))
 	}
 }
+
 

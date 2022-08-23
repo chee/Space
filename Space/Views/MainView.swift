@@ -29,7 +29,6 @@ struct MainView: View {
 			), with: nil)
 	}
 	
-	
 	//	func createFile() {
 	//		var folderURL: URL
 	//		if tableChoice != nil {
