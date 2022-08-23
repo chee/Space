@@ -13,6 +13,7 @@ import UniformTypeIdentifiers
 class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable {
 	static let richTypes: [UTType] = [.rtf, .rtfd, .flatRTFD]
 	static let htmlTypes: [UTType] = [.html]
+	static let plainTypes: [UTType] = [.plainText]
 	
 	var id: URL {url}
 	var url: URL
@@ -86,7 +87,7 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		return nil
 	}
 	
-	lazy var richText = { () -> NSAttributedString? in
+	lazy var attributedString = { () -> NSAttributedString? in
 		do {
 			// TODO handle failure
 			if (SpaceFile.richTypes.contains(self.type)) {
@@ -94,6 +95,8 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 			} else if (SpaceFile.htmlTypes.contains(type)) {
 				// TODO fancier html
 				return NSAttributedString(html: contents!, documentAttributes: .none)!
+			} else if (SpaceFile.plainTypes.contains(type)) {
+				return try NSAttributedString(data: contents!, format: .plainText)
 			}
 		} catch {
 		}
@@ -133,7 +136,7 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		if Self.richTypes.contains(type) {
 			do {
 				print("saving rich text")
-				let rtf = try richText?.richTextRtfData()
+				let rtf = try attributedString?.richTextRtfData()
 				print("writing")
 				print(rtf as Any)
 				try rtf?.write(to: url)
@@ -142,7 +145,7 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 				print("failed to write file :o")
 			}
 		} else if Self.htmlTypes.contains(type) {
-			let html = richText?.asHTML!
+			let html = attributedString?.asHTML!
 			do {
 				try html?.data(using: .utf8)?.write(to: url)
 			} catch {

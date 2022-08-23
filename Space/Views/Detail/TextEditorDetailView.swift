@@ -35,8 +35,8 @@ struct TextEditorDetailView: View {
 	
 	var body: some View {
 		ZStack {
-			if Binding($file.richText) != nil {
-				RichTextEditor(text: Binding($file.richText)!, context: context) {editor in
+			if Binding($file.attributedString) != nil {
+				RichTextEditor(text: Binding($file.attributedString)!, context: context) {editor in
 					editor.textContentInset = CGSize(width: 10, height: 20)
 				}
 				.background()
