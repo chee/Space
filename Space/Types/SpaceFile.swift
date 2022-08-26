@@ -155,13 +155,6 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		return NSAttributedString(string: "")
 	}
 	
-	func showInFinder() {
-		ws.selectFile(
-			url.path,
-			inFileViewerRootedAtPath: url.path
-		)
-	}
-	
 	func getContents() -> Data? {
 		fm.contents(atPath: url.path)
 	}
@@ -184,20 +177,6 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 	
 	var annotationFile: SpaceFile {
 		SpaceFile(url: annotationURL, type: UTType.rtf)
-	}
-	
-	func createAnnotation() -> Void {
-		if !annotationExists {
-			fm.createFile(atPath: annotationURL.path, contents: Data())
-		}
-	}
-	
-	func removeAnnotation() -> Void {
-		if annotationExists {
-			do {
-				try fm.trashItem(at: annotationURL, resultingItemURL: nil)
-			} catch {}
-		}
 	}
 	
 	func save(_ attributedString: NSAttributedString) {

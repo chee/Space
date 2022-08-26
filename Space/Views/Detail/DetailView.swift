@@ -16,6 +16,8 @@ struct DetailView: View {
 		HSplitView {
 			if file.conforms(to: TextEditorDetailView.supportedTypes) {
 				TextEditorDetailView(file: file)
+			} else if file.conforms(to: SpaceFile.videoTypes) {
+				MediaPlayerDetailView(file: file)
 			} else {
 				QuickLookDetailView(url:file.url)
 					.background()

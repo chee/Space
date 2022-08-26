@@ -19,7 +19,7 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
 }
 
 struct TextEditorDetailView: View {
-	@State var file: SpaceFile
+	var file: SpaceFile
 	@StateObject var context = RichTextContext()
 	@EnvironmentObject var appState: SpaceState
 	@State var ready = false

@@ -138,7 +138,6 @@
 		F086C30B28A5F8E200C0788A /* Space */ = {
 			isa = PBXGroup;
 			children = (
-				F018603228B882B100A70643 /* SpaceState.swift */,
 				F0967C9B28AC3BEA00C9792C /* Info.plist */,
 				F0967C8A28AB950F00C9792C /* App */,
 				F06EC71628AF3E49005049ED /* Extensions */,
@@ -194,6 +193,7 @@
 			children = (
 				F086C30C28A5F8E200C0788A /* Space.swift */,
 				F086C30E28A5F8E200C0788A /* ContentView.swift */,
+				F018603228B882B100A70643 /* SpaceState.swift */,
 			);
 			path = App;
 			sourceTree = "<group>";

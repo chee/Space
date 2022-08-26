@@ -69,7 +69,7 @@ struct SpaceFileTree: View {
 							}
 						})
 					.contextMenu {
-						Button("Show in Finder", action: folder.showInFinder)
+						Button("Show in Finder", action: {appState.showInFinder(folder)})
 							.keyboardShortcut("o", modifiers: [.shift, .command])
 					}
 					.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in

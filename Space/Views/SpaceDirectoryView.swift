@@ -8,6 +8,7 @@
 import SwiftUI
 import AppKit
 import Foundation
+import UniformTypeIdentifiers
 
 let defaultDetail = AnyView(Color(.clear).frame(maxHeight: .infinity))
 
@@ -82,11 +83,11 @@ struct SpaceDirectoryRow: View {
 			}
 			.contentShape(Rectangle())
 			.contextMenu {
-				Button("Show in Finder", action: file.showInFinder)
+				Button("Show in Finder", action: {appState.showInFinder(file)})
 					.keyboardShortcut("o", modifiers: [.shift, .command])
-				Button("Add annotation", action: file.createAnnotation)
+				Button("Add annotation", action: {appState.createAnnotation(for: file)})
 					.keyboardShortcut(.return, modifiers: [.option])
-				Button("Remove annotation", action: file.removeAnnotation)
+				Button("Remove annotation", action: {appState.removeAnnotation(for: file)})
 					.keyboardShortcut(.delete, modifiers: [.option])
 				Button("Rename", action: startRenaming)
 					.keyboardShortcut(.defaultAction)
@@ -117,6 +118,29 @@ struct SpaceDirectoryView: View {
 			List(folder.getChildren(), id: \.url, selection: $selection) {file in
 				SpaceDirectoryRow(file: file, selection: $selection)
 					.environmentObject(appState)
+			}
+			.toolbar {
+				ToolbarItemGroup(placement: .primaryAction) {
+					Button(action: {
+						for item in selection {
+							appState.trashURL(item)
+						}
+					}) {
+						Label("Delete", systemImage: "delete.backward.fill")
+					}.keyboardShortcut(.delete)
+					Button(action: {
+						let focus = selection.first ?? folder.url
+						selection.removeAll()
+						selection.insert(appState.createFile(
+							at: focus.hasDirectoryPath
+							? focus
+							: focus.deletingLastPathComponent(),
+							type: UTType.html
+						))
+					}) {
+						Label("New file", systemImage: "doc.fill.badge.plus")
+					}.keyboardShortcut("n")
+				}
 			}
 			.onChange(of: selection) {_ in
 				self.detail = defaultDetail
