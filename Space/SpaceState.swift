@@ -16,6 +16,7 @@ final class SpaceState: ObservableObject {
 	@AppStorage("sidebarSelection") var sidebarSelection: URL?
 	@Published var search = ""
 	@Published var isExpandedInSidebar: [URL:Bool] = [:]
+	@Published var texts: [URL:NSAttributedString] = [:]
 	
 	func setRootURL(url: URL) {
 		rootFolder = SpaceFile(
@@ -62,4 +63,13 @@ final class SpaceState: ObservableObject {
 			isExpandedInSidebar[f] = true
 		}
 	}
+	
+	func annotationExists(for file: SpaceFile) -> Bool {
+		return file.annotationExists
+	}
+	
+	func annotationFile(for file: SpaceFile) -> SpaceFile {
+		return SpaceFile(url: file.annotationURL, type: UTType.rtf)
+	}
+	
 }

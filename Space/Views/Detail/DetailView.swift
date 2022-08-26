@@ -9,7 +9,8 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct DetailView: View {
-	@State var file: SpaceFile
+	var file: SpaceFile
+	@EnvironmentObject var appState: SpaceState
 	
 	var body: some View {
 		HSplitView {
@@ -19,8 +20,8 @@ struct DetailView: View {
 				QuickLookDetailView(url:file.url)
 					.background()
 			}
-			if file.annotationExists {
-				TextEditorDetailView(file: file.annotationFile)
+			if appState.annotationExists(for: file) {
+				TextEditorDetailView(file: appState.annotationFile(for: file))
 					.background()
 			}
 		}

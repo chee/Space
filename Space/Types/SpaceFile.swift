@@ -8,6 +8,7 @@
 import Foundation
 import AppKit
 import UniformTypeIdentifiers
+import RichTextKit
 
 // TODO add reference to annotation
 
@@ -71,9 +72,20 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 			type: UTType.folder
 		)
 	}
+	
+	var rtfFormat: RichTextDataFormat {
+		if isAnnotation {
+			return .archivedData
+		} else if conforms(to: Self.richTypes) {
+			return .rtf
+		} else if conforms(to: Self.htmlTypes) {
+			return .archivedData
+		} else {
+			return .plainText
+		}
+	}
 
 	func getChildren() -> [SpaceFile] {
-		print("looking at children \(url)")
 		do {
 			let keys = Array<URLResourceKey>([
 				.contentTypeKey,
@@ -119,16 +131,24 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		return false
 	}
 	
-	func attributedString() -> NSAttributedString {
+	var attributedString = NSAttributedString(string: "")
+	
+	func getAttributedString() -> NSAttributedString {
 		do {
 			// TODO handle failure
 			if (conforms(to: Self.richTypes)) {
-				return try NSAttributedString(rtfData: getContents()!)
+				if let contents = getContents() {
+					return try NSAttributedString(rtfData: contents)
+				}
 			} else if (conforms(to: Self.htmlTypes)) {
-				// TODO fancier html
-				return NSAttributedString(html: getContents()!, documentAttributes: .none)!
+				if let contents = getContents() {
+					// TODO fancier html
+					return NSAttributedString(html: contents, documentAttributes: .none)!
+				}
 			} else if (conforms(to: Self.plainTypes)) {
-				return try NSAttributedString(data: getContents()!, format: .plainText)
+				if let contents = getContents() {
+					return try NSAttributedString(data: contents, format: .plainText)
+				}
 			}
 		} catch {
 		}
@@ -150,12 +170,16 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		url.appendingPathExtension("annotation")
 	}
 	
+	var exists: Bool {
+		fm.fileExists(atPath: url.path)
+	}
+	
 	var annotationExists: Bool {
 		fm.fileExists(atPath: annotationURL.path)
 	}
 	
-	var exists: Bool {
-		fm.fileExists(atPath: url.path)
+	var isAnnotation: Bool {
+		url.pathExtension == "annotation"
 	}
 	
 	var annotationFile: SpaceFile {
@@ -176,19 +200,19 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 		}
 	}
 	
-	func save() {
+	func save(_ attributedString: NSAttributedString) {
 		if !exists {
 			return
 		}
 		if Self.richTypes.contains(type) {
 			do {
-				let rtf = try attributedString().richTextRtfData()
+				let rtf = try attributedString.richTextRtfData()
 				try rtf.write(to: url)
 			} catch {
 				print("failed to write file :o")
 			}
 		} else if Self.htmlTypes.contains(type) {
-			let html = attributedString().asHTML!
+			let html = attributedString.asHTML!
 			do {
 				try html.data(using: .utf8)?.write(to: url)
 			} catch {

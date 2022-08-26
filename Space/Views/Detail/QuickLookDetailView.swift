@@ -24,8 +24,8 @@ struct QuickLookDetailView: NSViewRepresentable {
 	func updateNSView(
 		_ qlview: QLPreviewView,
 		context: NSViewRepresentableContext<QuickLookDetailView>) {
-		qlview.previewItem = url as QLPreviewItem
-	}
+			qlview.previewItem = url as QLPreviewItem
+		}
 	
 	typealias NSViewType = QLPreviewView
 }

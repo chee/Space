@@ -27,7 +27,7 @@ struct Space: App {
 		WindowGroup {
 			ContentView()
 		}
-		.windowStyle(.hiddenTitleBar)
+//		.windowStyle(.hiddenTitleBar)
 		.windowToolbarStyle(.unified)
 		.commands {
 			SidebarCommands()

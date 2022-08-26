@@ -21,20 +21,28 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
 struct TextEditorDetailView: View {
 	@State var file: SpaceFile
 	@StateObject var context = RichTextContext()
+	@EnvironmentObject var appState: SpaceState
 	@State var ready = false
+	
+	func text(_ file: SpaceFile) -> Binding<NSAttributedString> {
+		return .init(
+			get: { appState.texts[file.url, default: file.getAttributedString()] },
+			set: { appState.texts[file.url] = $0 }
+		)
+	}
 	
 	static let supportedTypes: [UTType] = SpaceFile.richTypes + SpaceFile.htmlTypes + SpaceFile.plainTypes
 	
 	func save() {
-		self.file.save()
+		self.file.save(text(file).wrappedValue)
 	}
 	
 	var body: some View {
-		RichTextEditor(text: Binding.constant(file.attributedString()), context: context) {editor in
+		RichTextEditor(text: text(file), context: context, format: file.rtfFormat) {editor in
 			editor.textContentInset = CGSize(width: 10, height: 20)
 		}
 		.onDisappear {
-			file.save()
+			file.save(text(file).wrappedValue)
 		}
 		.background()
 		.toolbar {
