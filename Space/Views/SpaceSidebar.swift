@@ -11,11 +11,11 @@ import AppKit
 import UniformTypeIdentifiers
 import XCTest
 
-struct SpaceFileTree: View {
+struct SpaceSidebar: View {
 	@EnvironmentObject var appState: SpaceState
 	@Binding var folder: SpaceFile
 	@Binding var selection: URL?
-	var parent: [SpaceFileTree]
+	var parent: [SpaceSidebar]
 	
 	func isExpanded(_ url: URL) -> Binding<Bool> {
 		return .init(
@@ -31,7 +31,7 @@ struct SpaceFileTree: View {
 				content: {
 					if appState.isExpandedInSidebar[folder.url] ?? false {
 						ForEach(folder.getChildren(), id: \.url) {childFolder in
-							SpaceFileTree(
+							SpaceSidebar(
 								folder: Binding.constant(childFolder),
 								selection: $selection,
 								parent: [self]
@@ -41,7 +41,7 @@ struct SpaceFileTree: View {
 				},
 				label: {
 					NavigationLink(
-						destination: SpaceDirectoryView(folder: $folder)
+						destination: SpaceTable(folder: $folder)
 							.environmentObject(appState),
 						tag: folder.url,
 						selection: $selection,
@@ -86,6 +86,7 @@ struct SpaceFileTree: View {
 					}
 				})
 			.onChange(of: selection) { [selection] next in
+				appState.tableSelection.removeAll()
 				if next == nil && selection != nil {
 					self.selection = selection
 				}

@@ -17,15 +17,17 @@ struct QuickLookDetailView: NSViewRepresentable {
 		let preview = QLPreviewView(frame: .zero, style: .normal)
 		preview?.autostarts = false
 		preview?.previewItem = url as QLPreviewItem
+		preview?.shouldCloseWithWindow = false
 		
 		return preview ?? QLPreviewView()
 	}
 	
 	func updateNSView(
 		_ qlview: QLPreviewView,
-		context: NSViewRepresentableContext<QuickLookDetailView>) {
-			qlview.previewItem = url as QLPreviewItem
-		}
+		context: NSViewRepresentableContext<QuickLookDetailView>
+	) {
+		qlview.previewItem = url as QLPreviewItem
+	}
 	
 	typealias NSViewType = QLPreviewView
 }

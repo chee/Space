@@ -12,15 +12,21 @@ import UniformTypeIdentifiers
 
 let defaultDetail = AnyView(Color(.clear).frame(maxHeight: .infinity))
 
-struct SpaceDirectoryRow: View {
+struct SpaceTableRow: View {
 	var file: SpaceFile
-	@Binding var selection: Set<URL>
 	@State var isExpanded: Bool = false
 	@State var confirming: Bool = false
 	@EnvironmentObject var appState: SpaceState
 	@State private var renaming = false
 	@FocusState private var focused: Bool
 	@State private var newName = ""
+
+	func isExpanded(_ url: URL) -> Binding<Bool> {
+		return .init(
+			get: { appState.isExpandedInTable[url, default: false] },
+			set: { appState.isExpandedInTable[url] = $0 }
+		)
+	}
 	
 	func startRenaming() {
 		renaming = true
@@ -32,15 +38,15 @@ struct SpaceDirectoryRow: View {
 		appState.move(from: file.url, to: newURL)
 		focused = false
 		newName = ""
-		selection.removeAll()
+		appState.tableSelection.removeAll()
 		//		file.url = newURL
 	}
 	
 	func quitRenaming() {
 		focused = false
 		renaming = false
-		if selection.isEmpty {
-			selection.insert(file.url)
+		if appState.tableSelection.isEmpty {
+			appState.tableSelection.insert(file.url)
 		}
 	}
 	
@@ -96,7 +102,7 @@ struct SpaceDirectoryRow: View {
 			DisclosureGroup(isExpanded: $isExpanded, content: {
 				if isExpanded {
 					ForEach(file.getChildren(), id: \.self.url) {child in
-						SpaceDirectoryRow(file: child, selection: $selection)
+						SpaceTableRow(file: child)
 					}
 				}
 			}, label: {label})
@@ -106,46 +112,32 @@ struct SpaceDirectoryRow: View {
 	}
 }
 
-struct SpaceDirectoryView: View {
+struct SpaceTable: View {
 	@Binding var folder: SpaceFile
-	@State private var selection = Set<URL>()
 	@EnvironmentObject var appState: SpaceState
 	@FocusState private var focusedFile: SpaceFile?
 	@State var detail: AnyView = defaultDetail
 	
 	var body: some View {
 		VSplitView {
-			List(folder.getChildren(), id: \.url, selection: $selection) {file in
-				SpaceDirectoryRow(file: file, selection: $selection)
+			List(folder.getChildren(), id: \.url, selection: $appState.tableSelection) {file in
+				SpaceTableRow(file: file)
 					.environmentObject(appState)
 			}
 			.toolbar {
 				ToolbarItemGroup(placement: .primaryAction) {
-					Button(action: {
-						for item in selection {
-							appState.trashURL(item)
-						}
-					}) {
+					Button(action: {appState.tableTrashSelection()}) {
 						Label("Delete", systemImage: "delete.backward.fill")
 					}.keyboardShortcut(.delete)
-					Button(action: {
-						let focus = selection.first ?? folder.url
-						selection.removeAll()
-						selection.insert(appState.createFile(
-							at: focus.hasDirectoryPath
-							? focus
-							: focus.deletingLastPathComponent(),
-							type: UTType.html
-						))
-					}) {
+					Button(action: {appState.tableCreateFile(fallback: folder.url)}) {
 						Label("New file", systemImage: "doc.fill.badge.plus")
 					}.keyboardShortcut("n")
 				}
 			}
-			.onChange(of: selection) {_ in
+			.onChange(of: appState.tableSelection) {_ in
 				self.detail = defaultDetail
-				if selection.count == 1 {
-					let file = SpaceFile(url: selection.first!)
+				if appState.tableSelection.count == 1 {
+					let file = SpaceFile(url: appState.tableSelection.first!)
 					// this causes a little flicker but means we always create a new view
 					// which is important for the richtext
 					DispatchQueue.main.async {

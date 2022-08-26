@@ -23,12 +23,15 @@ var _previewRootFile = SpaceFile(
 
 @main
 struct Space: App {
+	@ObservedObject var appState = SpaceState()
+
 	var body: some Scene {
 		WindowGroup {
 			ContentView()
+				.environmentObject(appState)
 		}
-//		.windowStyle(.hiddenTitleBar)
-		.windowToolbarStyle(.unified)
+		//.windowStyle(.hiddenTitleBar)
+		//.windowToolbarStyle(.unified)
 		.commands {
 			SidebarCommands()
 			TextEditingCommands()
@@ -36,5 +39,6 @@ struct Space: App {
 			ToolbarCommands()
 			ImportFromDevicesCommands()
 		}
+		.handlesExternalEvents(matching: Set(arrayLiteral: "*"))
 	}
 }

@@ -11,14 +11,17 @@ import UniformTypeIdentifiers
 
 @MainActor
 final class SpaceState: ObservableObject {
-	private var rootURL: URL?
+	@AppStorage("root") var rootURL: URL?
 	@Published var rootFolder: SpaceFile = SpaceFile(folder: "/Users/chee/Documents/Notebooks/")
 	@AppStorage("sidebarSelection") var sidebarSelection: URL?
+	@Published var tableSelection: Set<URL> = Set()
 	@Published var search = ""
 	@Published var isExpandedInSidebar: [URL:Bool] = [:]
+	@Published var isExpandedInTable: [URL:Bool] = [:]
 	@Published var texts: [URL:NSAttributedString] = [:]
 	
 	func setRootURL(url: URL) {
+		rootURL = url
 		rootFolder = SpaceFile(
 			url: url,
 			type: UTType.folder
@@ -61,6 +64,8 @@ final class SpaceState: ObservableObject {
 	}
 }
 
+
+// MARK: - SpaceState+File -
 extension SpaceState {
 	func createAnnotation(for file: SpaceFile) -> Void {
 		if !annotationExists(for: file) {
@@ -121,5 +126,25 @@ extension SpaceState {
 	
 	func trashFile(_ file: SpaceFile) {
 		trashURL(file.url)
+	}
+}
+
+// MARK: - SpaceState+Table -
+extension SpaceState {
+	func tableTrashSelection() {
+		for item in tableSelection {
+			trashURL(item)
+		}
+	}
+	func tableCreateFile (fallback: URL) {
+		let focus = tableSelection.first ?? fallback
+		tableSelection.removeAll()
+		let newFile = createFile(
+			at: focus.hasDirectoryPath
+			? focus
+			: focus.deletingLastPathComponent(),
+			type: UTType.html
+		)
+		tableSelection.insert(newFile)
 	}
 }
