@@ -12,23 +12,28 @@ import UniformTypeIdentifiers
 import XCTest
 
 struct SpaceFileTree: View {
-	var folder: SpaceFile
-	@EnvironmentObject var rootFolder: SpaceFile
-	@Binding var selection: SpaceFile.ID?
-	@State var isExpanded: Bool = true
+	@EnvironmentObject var appState: SpaceState
+	@Binding var folder: SpaceFile
+	@Binding var selection: URL?
 	var parent: [SpaceFileTree]
+	
+	func isExpanded(_ url: URL) -> Binding<Bool> {
+		return .init(
+			get: { appState.isExpandedInSidebar[url, default: false] },
+			set: { appState.isExpandedInSidebar[url] = $0 }
+		)
+	}
 	
 	var body: some View {
 		if folder.isFolder {
 			DisclosureGroup(
-				isExpanded: $isExpanded,
+				isExpanded: isExpanded(folder.url),
 				content: {
-					if isExpanded {
-						ForEach(folder.children, id: \.self.id) {childFolder in
+					if appState.isExpandedInSidebar[folder.url] ?? false {
+						ForEach(folder.getChildren(), id: \.url) {childFolder in
 							SpaceFileTree(
-								folder: childFolder,
+								folder: Binding.constant(childFolder),
 								selection: $selection,
-								isExpanded: false,
 								parent: [self]
 							)
 						}
@@ -36,18 +41,10 @@ struct SpaceFileTree: View {
 				},
 				label: {
 					NavigationLink(
-						destination: SpaceDirectoryView(folder: folder) { id in
-							if folder.find(id) != nil {
-								self.isExpanded = true
-								selection = id
-								var p = self.parent.first
-								while p != nil {
-									p?.isExpanded = true
-									p = p?.parent.first
-								}
-							}
-						},
-						tag: folder.id, selection: $selection,
+						destination: SpaceDirectoryView(folder: $folder)
+							.environmentObject(appState),
+						tag: folder.url,
+						selection: $selection,
 						label: {
 							HStack {
 								Image(nsImage: folder.icon)
@@ -78,17 +75,11 @@ struct SpaceFileTree: View {
 					.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
 						for drop in drops {
 							drop.loadItem(forTypeIdentifier: "public.file-url") { (data, error) in
-								let url = NSURL(
+								let droppedURL = NSURL(
 									absoluteURLWithDataRepresentation: data as! Data,
 									relativeTo: nil
 								) as URL
-								let space = rootFolder.find(url)
-								?? SpaceFile(url: url)
-								folder.drop(space)
-								DispatchQueue.main.async {
-									folder._children = nil
-									space._children = nil
-								}
+								appState.drop(to: folder.url, from: droppedURL)
 							}
 						}
 						return true
@@ -99,6 +90,7 @@ struct SpaceFileTree: View {
 					self.selection = selection
 				}
 			}
+
 		}
 	}
 }

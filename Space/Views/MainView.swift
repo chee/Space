@@ -6,16 +6,13 @@
 //
 
 import SwiftUI
-import UniformTypeIdentifiers
 
 struct MainView: View {
-	@State var search = ""
 	@AppStorage("root") private var rootURL: URL?
-	@AppStorage("sidebarSelection") private var sidebarSelection: SpaceFile.ID?
-	@ObservedObject var rootFolder: SpaceFile = SpaceFile(folder: "/users/chee/docs/notebook/")
+	@StateObject var appState = SpaceState()
 	
 	init() {
-		if rootURL == nil {
+		while rootURL == nil {
 			let panel = NSOpenPanel()
 			panel.canChooseFiles = false
 			panel.canChooseDirectories = true
@@ -24,10 +21,6 @@ struct MainView: View {
 				rootURL = panel.url
 			}
 		}
-		rootFolder = SpaceFile(
-			url: rootURL!,
-			type: UTType.folder
-		)
 	}
 
 	private func toggleSidebar() {
@@ -40,7 +33,7 @@ struct MainView: View {
 	
 	private func reload() {
 		DispatchQueue.main.sync {
-			rootFolder.objectWillChange.send()
+			appState.objectWillChange.send()
 		}
 	}
 	
@@ -48,20 +41,26 @@ struct MainView: View {
 		NavigationView {
 			List {
 				SpaceFileTree(
-					folder: rootFolder,
-					selection: $sidebarSelection,
-					isExpanded: true,
+					folder: $appState.rootFolder,
+					selection: $appState.sidebarSelection,
 					parent: []
-				).environmentObject(rootFolder)
+				)
+				.environmentObject(appState)
 				.onAppear {
-					if sidebarSelection == nil {
-						sidebarSelection = rootFolder.id
+					if appState.sidebarSelection == nil {
+						appState.sidebarSelection = appState.rootFolder.url
 					}
 				}
 			}
 			Text("Select an item in the sidebar")
 		}
-		.searchable(text: $search, placement: .toolbar)
+		.searchable(
+			text: $appState.search,
+			placement: .toolbar
+		)
+		.onAppear {
+			appState.setRootURL(url: rootURL!)
+		}
 	}
 }
 

@@ -19,22 +19,18 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
 }
 
 struct TextEditorDetailView: View {
-	@ObservedObject var file: SpaceFile
+	@State var file: SpaceFile
 	@StateObject var context = RichTextContext()
 	@State var ready = false
 	
 	static let supportedTypes: [UTType] = SpaceFile.richTypes + SpaceFile.htmlTypes + SpaceFile.plainTypes
-	
-	init(_ file: SpaceFile) {
-		self.file = file
-	}
 	
 	func save() {
 		self.file.save()
 	}
 	
 	var body: some View {
-		RichTextEditor(text: $file.attributedString, context: context) {editor in
+		RichTextEditor(text: Binding.constant(file.attributedString()), context: context) {editor in
 			editor.textContentInset = CGSize(width: 10, height: 20)
 		}
 		.onDisappear {

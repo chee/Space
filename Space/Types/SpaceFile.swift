@@ -10,13 +10,23 @@ import AppKit
 import UniformTypeIdentifiers
 
 // TODO add reference to annotation
-class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable {
+
+struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
+	static func == (lhs: SpaceFile, rhs: SpaceFile) -> Bool {
+		lhs.url.resolvingSymlinksInPath() == rhs.url.resolvingSymlinksInPath()
+	}
+	
+	static func < (lhs: SpaceFile, rhs: SpaceFile) -> Bool {
+		return lhs.name.localizedCompare(rhs.name) == .orderedAscending
+	}
+	
+	var id: Self {self}
+	
 	static let richTypes: [UTType] = [.rtf, .rtfd, .flatRTFD]
 	static let htmlTypes: [UTType] = [.html]
 	static let plainTypes: [UTType] = [.plainText]
 	static let videoTypes: [UTType] = [.movie]
 	
-	var id: URL {url}
 	var url: URL
 	var isFolder: Bool { self.type == UTType.folder }
 	var icon: NSImage
@@ -47,33 +57,21 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		}
 	}
 
-	convenience init(_ path: String) {
+	init(_ path: String) {
 		self.init(
 			url: URL(fileURLWithPath: path)
 				.resolvingSymlinksInPath()
 		)
 	}
 	
-	convenience init(folder: String) {
+	init(folder: String) {
 		self.init(
 			url: URL(fileURLWithPath: folder)
 				.resolvingSymlinksInPath(),
 			type: UTType.folder
 		)
 	}
-	
-	func hash(into hasher: inout Hasher) {
-		return hasher.combine(ObjectIdentifier(self))
-	}
-	
-	static func ==(lhs: SpaceFile, rhs: SpaceFile) -> Bool {
-		lhs.url == rhs.url
-	}
-	
-	static func < (lhs: SpaceFile, rhs: SpaceFile) -> Bool {
-		lhs.name < rhs.name
-	}
-	
+
 	func getChildren() -> [SpaceFile] {
 		print("looking at children \(url)")
 		do {
@@ -111,30 +109,7 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 			return []
 		}
 	}
-	
-	lazy var children: [SpaceFile] = {
-		if _children == nil {
-			_children = getChildren()
-		}
-		return getChildren()
-	}()
 
-	@Published var _children: [SpaceFile]?
-	
-	func find(_ id: ID) -> SpaceFile? {
-		if self.id == id {
-			return self
-		}
-		
-		for child in children {
-			if let match = child.find(id) {
-				return match
-			}
-		}
-		
-		return nil
-	}
-	
 	func conforms(to types: [UTType]) -> Bool {
 		for foreign in types {
 			if type.conforms(to: foreign) {
@@ -144,21 +119,21 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		return false
 	}
 	
-	lazy var attributedString = { () -> NSAttributedString in
+	func attributedString() -> NSAttributedString {
 		do {
 			// TODO handle failure
 			if (conforms(to: Self.richTypes)) {
-				return try NSAttributedString(rtfData: contents!)
+				return try NSAttributedString(rtfData: getContents()!)
 			} else if (conforms(to: Self.htmlTypes)) {
 				// TODO fancier html
-				return NSAttributedString(html: contents!, documentAttributes: .none)!
+				return NSAttributedString(html: getContents()!, documentAttributes: .none)!
 			} else if (conforms(to: Self.plainTypes)) {
-				return try NSAttributedString(data: contents!, format: .plainText)
+				return try NSAttributedString(data: getContents()!, format: .plainText)
 			}
 		} catch {
 		}
 		return NSAttributedString(string: "")
-	}()
+	}
 	
 	func showInFinder() {
 		ws.selectFile(
@@ -170,11 +145,7 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 	func getContents() -> Data? {
 		fm.contents(atPath: url.path)
 	}
-	
-	lazy var contents = {
-		getContents()
-	}()
-	
+
 	var annotationURL: URL {
 		url.appendingPathExtension("annotation")
 	}
@@ -195,7 +166,6 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		if !annotationExists {
 			fm.createFile(atPath: annotationURL.path, contents: Data())
 		}
-		objectWillChange.send()
 	}
 	
 	func removeAnnotation() -> Void {
@@ -204,7 +174,6 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 				try fm.trashItem(at: annotationURL, resultingItemURL: nil)
 			} catch {}
 		}
-		objectWillChange.send()
 	}
 	
 	func save() {
@@ -213,47 +182,19 @@ class SpaceFile: ObservableObject, Identifiable, Hashable, Equatable, Comparable
 		}
 		if Self.richTypes.contains(type) {
 			do {
-				let rtf = try attributedString.richTextRtfData()
+				let rtf = try attributedString().richTextRtfData()
 				try rtf.write(to: url)
 			} catch {
 				print("failed to write file :o")
 			}
 		} else if Self.htmlTypes.contains(type) {
-			let html = attributedString.asHTML!
+			let html = attributedString().asHTML!
 			do {
 				try html.data(using: .utf8)?.write(to: url)
 			} catch {
 				print("failed to write file")
 			}
 		}
-	}
-	
-	func drop(_ dropped: SpaceFile) -> Void {
-		dropped.move(
-			self.url.appendingPathComponent(
-				dropped.url.lastPathComponent
-			)
-		)
-		DispatchQueue.main.async {
-			self._children = nil
-		}
-	}
-	
-	func move(_ newURL: URL) -> Void {
-		do {
-			try fm.moveItem(
-				at: self.url,
-				to: newURL
-			)
-			
-			if annotationExists {
-				try fm.moveItem(
-					at: annotationURL,
-					to: newURL.appendingPathExtension("annotation")
-				)
-			}
-		} catch {}
-
 	}
 }
 
