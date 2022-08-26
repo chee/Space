@@ -23,7 +23,7 @@ struct TextEditorDetailView: View {
 	@StateObject var context = RichTextContext()
 	@State var ready = false
 	
-	static let supportedTypes: [UTType] = SpaceFile.richTypes + SpaceFile.htmlTypes
+	static let supportedTypes: [UTType] = SpaceFile.richTypes + SpaceFile.htmlTypes + SpaceFile.plainTypes
 	
 	init(_ file: SpaceFile) {
 		self.file = file
@@ -34,44 +34,43 @@ struct TextEditorDetailView: View {
 	}
 	
 	var body: some View {
-		ZStack {
-			if Binding($file.attributedString) != nil {
-				RichTextEditor(text: Binding($file.attributedString)!, context: context) {editor in
-					editor.textContentInset = CGSize(width: 10, height: 20)
-				}
-				.background()
-				.toolbar {
-					ToolbarItemGroup(placement: .status) {
-						Button(action: {
-							context.toggle(.bold)
-						}) {
-							Label("Bold", systemImage: "bold")
-						}.keyboardShortcut("b")
-						
-						Button(action: {
-							context.toggle(.italic)
-						}) {
-							Label("Italic", systemImage: "italic")
-						}.keyboardShortcut("i")
-						
-						Button(action: {
-							context.toggle(.underlined)
-						}) {
-							Label("Underline", systemImage: "underline")
-						}.keyboardShortcut("u")
-						
-						Button(action: {context.incrementFontSize()}) {
-							Label("Increase font size", systemImage: "textformat.size.larger")
-						}.keyboardShortcut("=")
-						
-						Button(action: {context.decrementFontSize()}) {
-							Label("Decrease font size", systemImage: "textformat.size.smaller")
-						}.keyboardShortcut("-")
-						Button(action: save) {
-							Label("Save", systemImage: "square.and.arrow.down.fill")
-						}.keyboardShortcut("s")
-					}
-				}
+		RichTextEditor(text: $file.attributedString, context: context) {editor in
+			editor.textContentInset = CGSize(width: 10, height: 20)
+		}
+		.onDisappear {
+			file.save()
+		}
+		.background()
+		.toolbar {
+			ToolbarItemGroup(placement: .status) {
+				Button(action: {
+					context.toggle(.bold)
+				}) {
+					Label("Bold", systemImage: "bold")
+				}.keyboardShortcut("b")
+				
+				Button(action: {
+					context.toggle(.italic)
+				}) {
+					Label("Italic", systemImage: "italic")
+				}.keyboardShortcut("i")
+				
+				Button(action: {
+					context.toggle(.underlined)
+				}) {
+					Label("Underline", systemImage: "underline")
+				}.keyboardShortcut("u")
+				
+				Button(action: {context.incrementFontSize()}) {
+					Label("Increase font size", systemImage: "textformat.size.larger")
+				}.keyboardShortcut("=")
+				
+				Button(action: {context.decrementFontSize()}) {
+					Label("Decrease font size", systemImage: "textformat.size.smaller")
+				}.keyboardShortcut("-")
+				Button(action: save) {
+					Label("Save", systemImage: "square.and.arrow.down.fill")
+				}.keyboardShortcut("s")
 			}
 		}
 		.frame(maxWidth: .infinity, maxHeight: .infinity)

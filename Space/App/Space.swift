@@ -16,10 +16,10 @@ let app = NSApplication.shared
 let _previewRootURL = URL(
 	fileURLWithPath: "/Users/chee/Documents/Notebooks/"
 ).resolvingSymlinksInPath()
+
 var _previewRootFile = SpaceFile(
 	url: _previewRootURL
 )
-
 
 @main
 struct Space: App {
@@ -27,8 +27,8 @@ struct Space: App {
 		WindowGroup {
 			ContentView()
 		}
-//		.windowStyle(.hiddenTitleBar)
-//		.windowToolbarStyle(.unified)
+		.windowStyle(.hiddenTitleBar)
+		.windowToolbarStyle(.unified)
 		.commands {
 			SidebarCommands()
 			TextEditingCommands()

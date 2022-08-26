@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		F0388E6F28AE21760077D651 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0388E6E28AE21760077D651 /* Binding+onChange.swift */; };
-		F043570128B3908600B81C33 /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F043570028B3908600B81C33 /* RichTextKit */; };
+		F043570128B3908600B81C33 /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F043570028B3908600B81C33 /* RichTextKit */; settings = {ATTRIBUTES = (Required, ); }; };
 		F06EC71528AF21B6005049ED /* SpaceDirectoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06EC71428AF21B6005049ED /* SpaceDirectoryView.swift */; };
 		F06EC71828AF55FD005049ED /* NSAttributedString+asHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06EC71728AF55FD005049ED /* NSAttributedString+asHTML.swift */; };
 		F086C30D28A5F8E200C0788A /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C30C28A5F8E200C0788A /* Space.swift */; };
@@ -26,6 +26,7 @@
 		F0967C9A28AC2D8000C9792C /* DetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967C9928AC2D8000C9792C /* DetailView.swift */; };
 		F0967C9F28AC3D3800C9792C /* Terminology.sdef in Resources */ = {isa = PBXBuildFile; fileRef = F0967C9E28AC3D3800C9792C /* Terminology.sdef */; };
 		F0967CA128AC3DDB00C9792C /* Scripts.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0967CA028AC3DDB00C9792C /* Scripts.swift */; };
+		F09FA29028B79AB900B955B7 /* MediaPlayerDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F09FA28F28B79AB900B955B7 /* MediaPlayerDetailView.swift */; };
 		F0C8D79428AC5EF0002E864D /* TextEditorDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C8D79328AC5EF0002E864D /* TextEditorDetailView.swift */; };
 		F0C8D7A128ACF048002E864D /* View+DoubleClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0C8D7A028ACF048002E864D /* View+DoubleClick.swift */; };
 /* End PBXBuildFile section */
@@ -71,6 +72,7 @@
 		F0967C9B28AC3BEA00C9792C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		F0967C9E28AC3D3800C9792C /* Terminology.sdef */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Terminology.sdef; sourceTree = "<group>"; };
 		F0967CA028AC3DDB00C9792C /* Scripts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Scripts.swift; sourceTree = "<group>"; };
+		F09FA28F28B79AB900B955B7 /* MediaPlayerDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaPlayerDetailView.swift; sourceTree = "<group>"; };
 		F0C8D79328AC5EF0002E864D /* TextEditorDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextEditorDetailView.swift; sourceTree = "<group>"; };
 		F0C8D7A028ACF048002E864D /* View+DoubleClick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "View+DoubleClick.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -208,6 +210,7 @@
 				F0967C8528AB930500C9792C /* QuickLookDetailView.swift */,
 				F0967C8E28AB965000C9792C /* WebDetailView.swift */,
 				F0C8D79328AC5EF0002E864D /* TextEditorDetailView.swift */,
+				F09FA28F28B79AB900B955B7 /* MediaPlayerDetailView.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -352,6 +355,7 @@
 				F0C8D79428AC5EF0002E864D /* TextEditorDetailView.swift in Sources */,
 				F0967C8828AB93DA00C9792C /* SpaceFileTree.swift in Sources */,
 				F0C8D7A128ACF048002E864D /* View+DoubleClick.swift in Sources */,
+				F09FA29028B79AB900B955B7 /* MediaPlayerDetailView.swift in Sources */,
 				F06EC71828AF55FD005049ED /* NSAttributedString+asHTML.swift in Sources */,
 				F0967C8D28AB955900C9792C /* SpaceFile.swift in Sources */,
 				F086C30F28A5F8E200C0788A /* ContentView.swift in Sources */,
@@ -529,7 +533,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Space/Preview Content\"";
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Space/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
@@ -540,6 +545,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = party.chee.Space;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -562,7 +568,8 @@
 				DEVELOPMENT_ASSET_PATHS = "\"Space/Preview Content\"";
 				DEVELOPMENT_TEAM = R2MP6EU7T3;
 				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_PREVIEWS = YES;
+				ENABLE_PREVIEWS = NO;
+				ENABLE_TESTING_SEARCH_PATHS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Space/Info.plist;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.productivity";
@@ -573,6 +580,7 @@
 				);
 				MACOSX_DEPLOYMENT_TARGET = 12.3;
 				MARKETING_VERSION = 1.0;
+				NEW_SETTING = "";
 				PRODUCT_BUNDLE_IDENTIFIER = party.chee.Space;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

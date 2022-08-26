@@ -9,15 +9,12 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct DetailView: View {
-	let file: SpaceFile
-	// TODO code editor for plainTypes? embed emacs lol?
-	static let plainTypes: [UTType] = [.plainText]
+	@ObservedObject var file: SpaceFile
 	
 	var body: some View {
 		HSplitView {
-			if TextEditorDetailView.supportedTypes.contains(file.type) {
+			if file.conforms(to: TextEditorDetailView.supportedTypes) {
 				TextEditorDetailView(file)
-					.background()
 			} else {
 				QuickLookDetailView(url:file.url)
 					.background()

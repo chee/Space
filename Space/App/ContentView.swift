@@ -9,12 +9,8 @@ import SwiftUI
 import AppKit
 
 struct ContentView: View {
-	let rootURL = URL(
-		fileURLWithPath: "/Users/chee/Documents/Notebooks/"
-	).resolvingSymlinksInPath()
-
 	var body: some View {
-		MainView(rootURL)
+		MainView()
 	}
 }
 

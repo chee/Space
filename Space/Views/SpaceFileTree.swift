@@ -9,52 +9,97 @@ import Foundation
 import SwiftUI
 import AppKit
 import UniformTypeIdentifiers
+import XCTest
 
 struct SpaceFileTree: View {
-	weak var file: SpaceFile?
+	var folder: SpaceFile
+	@EnvironmentObject var rootFolder: SpaceFile
 	@Binding var selection: SpaceFile.ID?
 	@State var isExpanded: Bool = true
+	var parent: [SpaceFileTree]
 	
 	var body: some View {
-		if file!.isFolder {
+		if folder.isFolder {
 			DisclosureGroup(
 				isExpanded: $isExpanded,
 				content: {
 					if isExpanded {
-						ForEach(file!.children, id: \.self.id) { childNode in
-							SpaceFileTree(file: childNode, selection: $selection, isExpanded: false)
+						ForEach(folder.children, id: \.self.id) {childFolder in
+							SpaceFileTree(
+								folder: childFolder,
+								selection: $selection,
+								isExpanded: false,
+								parent: [self]
+							)
 						}
 					}
 				},
 				label: {
 					NavigationLink(
-						destination: SpaceDirectoryView(dir: file) {id in
-							if file!.find(id) != nil {
+						destination: SpaceDirectoryView(folder: folder) { id in
+							if folder.find(id) != nil {
 								self.isExpanded = true
-								// TODO find a better way
-								DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-									selection = id
+								selection = id
+								var p = self.parent.first
+								while p != nil {
+									p?.isExpanded = true
+									p = p?.parent.first
 								}
 							}
 						},
-						tag: file!.id, selection: $selection,
+						tag: folder.id, selection: $selection,
 						label: {
-							Image(nsImage: file!.icon)
-								.resizable(resizingMode: .tile)
-								.frame(width: 20, height: 20, alignment: .center)
-							Text(file!.name)
-								.lineLimit(1)
-								.frame(alignment: .center)
+							HStack {
+								Image(nsImage: folder.icon)
+									.resizable(resizingMode: .stretch)
+									.frame(width: 24, height: 24, alignment: .leading)
+									.onDrag {
+										return NSItemProvider(object: folder.url as NSURL)
+									} preview: {
+										VStack {
+											Image(nsImage: folder.icon)
+												.resizable(resizingMode: .stretch)
+												.frame(width: 24, height: 24, alignment: .leading)
+											Text(folder.name)
+												.lineLimit(1)
+										}
+										.frame(width: 500, height: 500, alignment: .center)
+									}
+								Text(folder.name)
+									.lineLimit(1)
+									.font(.system(size: 18))
+									.frame(alignment: .center)
+							}
 						})
 					.contextMenu {
-						Button("Show in Finder", action: file!.showInFinder)
+						Button("Show in Finder", action: folder.showInFinder)
 							.keyboardShortcut("o", modifiers: [.shift, .command])
 					}
-				}).onChange(of: selection) {[selection] next in
-					if next == nil && selection != nil {
-						self.selection = selection
+					.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
+						for drop in drops {
+							drop.loadItem(forTypeIdentifier: "public.file-url") { (data, error) in
+								let url = NSURL(
+									absoluteURLWithDataRepresentation: data as! Data,
+									relativeTo: nil
+								) as URL
+								let space = rootFolder.find(url)
+								?? SpaceFile(url: url)
+								folder.drop(space)
+								DispatchQueue.main.async {
+									folder._children = nil
+									space._children = nil
+								}
+							}
+						}
+						return true
 					}
+				})
+			.onChange(of: selection) { [selection] next in
+				if next == nil && selection != nil {
+					self.selection = selection
 				}
+			}
 		}
 	}
 }
+

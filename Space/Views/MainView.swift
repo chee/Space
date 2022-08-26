@@ -9,18 +9,27 @@ import SwiftUI
 import UniformTypeIdentifiers
 
 struct MainView: View {
-	var rootURL: URL
-	var rootFile: SpaceFile
 	@State var search = ""
+	@AppStorage("root") private var rootURL: URL?
+	@AppStorage("sidebarSelection") private var sidebarSelection: SpaceFile.ID?
+	@ObservedObject var rootFolder: SpaceFile = SpaceFile(folder: "/users/chee/docs/notebook/")
 	
-	init(_ rootURL: URL) {
-		self.rootURL = rootURL
-		rootFile = SpaceFile(
-			url: rootURL,
+	init() {
+		if rootURL == nil {
+			let panel = NSOpenPanel()
+			panel.canChooseFiles = false
+			panel.canChooseDirectories = true
+			panel.allowsMultipleSelection = false
+			if panel.runModal() == .OK {
+				rootURL = panel.url
+			}
+		}
+		rootFolder = SpaceFile(
+			url: rootURL!,
 			type: UTType.folder
 		)
 	}
-	
+
 	private func toggleSidebar() {
 		NSApp.keyWindow?
 			.firstResponder?
@@ -29,37 +38,25 @@ struct MainView: View {
 			), with: nil)
 	}
 	
-	//	func createFile() {
-	//		var folderURL: URL
-	//		if tableChoice != nil {
-	//			if tableChoice!.isFolder {
-	//				folderURL = tableChoice!.url
-	//			} else {
-	//				folderURL = tableChoice!.url.deletingLastPathComponent()
-	//			}
-	//		} else if sidebarChoice != nil {
-	//			folderURL = sidebarChoice!.url
-	//		} else {
-	//			folderURL = rootURL
-	//		}
-	//		let fileURL = folderURL.appendingPathComponent("New File.html")
-	//		let path = fileURL.path
-	//		fm.createFile(atPath: path, contents: nil)
-	//		sidebarChoice = SpaceFile(url: folderURL, type: UTType.folder)
-	//		tableChoice = SpaceFile(url: fileURL, type: UTType.html)
-	//	}
-	@State private var sidebarSelection: SpaceFile.ID?
-	@State private var listSelection: SpaceFile.ID?
+	private func reload() {
+		DispatchQueue.main.sync {
+			rootFolder.objectWillChange.send()
+		}
+	}
 	
 	var body: some View {
 		NavigationView {
-			List([rootFile]) {file in
+			List {
 				SpaceFileTree(
-					file: file,
+					folder: rootFolder,
 					selection: $sidebarSelection,
-					isExpanded: true
-				).onAppear {
-					sidebarSelection = rootFile.id
+					isExpanded: true,
+					parent: []
+				).environmentObject(rootFolder)
+				.onAppear {
+					if sidebarSelection == nil {
+						sidebarSelection = rootFolder.id
+					}
 				}
 			}
 			Text("Select an item in the sidebar")
@@ -70,7 +67,9 @@ struct MainView: View {
 
 struct MainView_Previews: PreviewProvider {
 	static var previews: some View {
-		MainView(_previewRootURL).preferredColorScheme(.dark)
-		MainView(_previewRootURL).preferredColorScheme(.light)
+		MainView()
+			.preferredColorScheme(.dark)
+		MainView()
+			.preferredColorScheme(.light)
 	}
 }
