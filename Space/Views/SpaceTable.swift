@@ -14,17 +14,16 @@ let defaultDetail = AnyView(Color(.clear).frame(maxHeight: .infinity))
 
 struct SpaceTableRow: View {
 	var file: SpaceFile
-	@State var isExpanded: Bool = false
 	@State var confirming: Bool = false
 	@EnvironmentObject var appState: SpaceState
 	@State private var renaming = false
 	@FocusState private var focused: Bool
 	@State private var newName = ""
-
+	
 	func isExpanded(_ url: URL) -> Binding<Bool> {
 		return .init(
-			get: { appState.isExpandedInTable[url, default: false] },
-			set: { appState.isExpandedInTable[url] = $0 }
+			get: { appState.expandedInTable[url, default: false] },
+			set: { appState.expandedInTable[url] = $0 }
 		)
 	}
 	
@@ -76,8 +75,27 @@ struct SpaceTableRow: View {
 			}
 			Spacer()
 			Text(file.type.localizedDescription ?? file.type.description)
-			Text("move")
+				.help(file.type.description)
+//			Text(file.createdOn?.formatted(date: .abbreviated, time: .shortened) ?? "")
+//				.frame(maxWidth: .infinity, alignment: .leading)
+//			Text(file.modifiedOn?.formatted(date: .abbreviated, time: .shortened) ?? "")
+//				.frame(maxWidth: .infinity, alignment: .leading)
+//			Text(file.accessedOn?.formatted(date: .abbreviated, time: .shortened) ?? "")
+//				.frame(maxWidth: .infinity, alignment: .leading)
 		}
+			.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
+				for drop in drops {
+					drop.loadItem(forTypeIdentifier: "public.file-url") { (data, error) in
+						let droppedURL = NSURL(
+							absoluteURLWithDataRepresentation: data as! Data,
+							relativeTo: nil
+						) as URL
+						let folderURL = file.isFolder ? file.url : file.url.deletingLastPathComponent()
+						appState.drop(to: folderURL, from: droppedURL)
+					}
+				}
+				return true
+			}
 			.lineLimit(1)
 			.font(.system(size: 18))
 			.onDoubleClick {
@@ -97,12 +115,19 @@ struct SpaceTableRow: View {
 					.keyboardShortcut(.delete, modifiers: [.option])
 				Button("Rename", action: startRenaming)
 					.keyboardShortcut(.defaultAction)
+				Button(action: {appState.trashFile(file)}) {
+					Label("Delete", systemImage: "delete.backward.fill")
+				}
 			}
 		if file.isFolder {
-			DisclosureGroup(isExpanded: $isExpanded, content: {
-				if isExpanded {
-					ForEach(file.getChildren(), id: \.self.url) {child in
-						SpaceTableRow(file: child)
+			DisclosureGroup(isExpanded: isExpanded(file.url), content: {
+				if isExpanded(file.url).wrappedValue {
+					if let children = file.getChildren() {
+						if children.count > 0 {
+							ForEach(children, id: \.self.url) {child in
+								SpaceTableRow(file: child)
+							}
+						}
 					}
 				}
 			}, label: {label})
@@ -123,15 +148,34 @@ struct SpaceTable: View {
 			List(folder.getChildren(), id: \.url, selection: $appState.tableSelection) {file in
 				SpaceTableRow(file: file)
 					.environmentObject(appState)
+					.itemProvider {
+						return NSItemProvider(object: folder.url as NSURL)
+					}
 			}
 			.toolbar {
-				ToolbarItemGroup(placement: .primaryAction) {
+				ToolbarItem(placement: .primaryAction) {
+					Menu {
+						Button("Folder", action: {
+							// TODO start renaming
+							appState.tableCreateFolder(fallback: folder.url)
+						})
+						Button("HTML", action: {
+							appState.tableCreateFile(fallback: folder.url, type: UTType.html)
+						})
+						Button("Plain", action: {
+							appState.tableCreateFile(fallback: folder.url, type: UTType.plainText)
+						})
+						Button("Rich", action: {
+							appState.tableCreateFile(fallback: folder.url, type: UTType.rtfd)
+						})
+					} label: {
+						Label("New", systemImage: "doc.fill.badge.plus")
+					}
+				}
+				ToolbarItemGroup(placement: .destructiveAction) {
 					Button(action: {appState.tableTrashSelection()}) {
 						Label("Delete", systemImage: "delete.backward.fill")
 					}.keyboardShortcut(.delete)
-					Button(action: {appState.tableCreateFile(fallback: folder.url)}) {
-						Label("New file", systemImage: "doc.fill.badge.plus")
-					}.keyboardShortcut("n")
 				}
 			}
 			.onChange(of: appState.tableSelection) {_ in

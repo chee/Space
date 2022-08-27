@@ -20,6 +20,7 @@ func ??<T>(lhs: Binding<Optional<T>>, rhs: T) -> Binding<T> {
 
 struct TextEditorDetailView: View {
 	var file: SpaceFile
+	var isMediaAnnotation: Bool = false
 	@StateObject var context = RichTextContext()
 	@EnvironmentObject var appState: SpaceState
 	@State var ready = false
@@ -47,9 +48,20 @@ struct TextEditorDetailView: View {
 		.background()
 		.toolbar {
 			ToolbarItemGroup(placement: .status) {
-				Button(action: {
+				if isMediaAnnotation {
+					Button {
+						context.pasteText(
+							"space:\(file.url.deletingPathExtension().path)?time=\(appState.playingMediaTime.seconds)",
+							at: text(file).wrappedValue.length,
+							moveCursorToPastedContent: true
+						)
+					} label: {
+						Label("Insert media time", systemImage: "video.circle")
+					}
+				}
+				Button {
 					context.toggle(.bold)
-				}) {
+				} label: {
 					Label("Bold", systemImage: "bold")
 				}.keyboardShortcut("b")
 				

@@ -3,10 +3,10 @@
     {
       "identity" : "richtextkit",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/danielsaidi/RichTextKit.git",
+      "location" : "https://github.com/danielsaidi/RichTextKit",
       "state" : {
-        "branch" : "main",
-        "revision" : "d608a389a7f463adf8c12bcc0108395e7c78c229"
+        "revision" : "d608a389a7f463adf8c12bcc0108395e7c78c229",
+        "version" : "0.1.1"
       }
     }
   ],

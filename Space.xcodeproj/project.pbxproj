@@ -9,7 +9,7 @@
 /* Begin PBXBuildFile section */
 		F018603328B882B100A70643 /* SpaceState.swift in Sources */ = {isa = PBXBuildFile; fileRef = F018603228B882B100A70643 /* SpaceState.swift */; };
 		F0388E6F28AE21760077D651 /* Binding+onChange.swift in Sources */ = {isa = PBXBuildFile; fileRef = F0388E6E28AE21760077D651 /* Binding+onChange.swift */; };
-		F043570128B3908600B81C33 /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F043570028B3908600B81C33 /* RichTextKit */; settings = {ATTRIBUTES = (Required, ); }; };
+		F03DC69C28BAB910007FBFF2 /* RichTextKit in Frameworks */ = {isa = PBXBuildFile; productRef = F03DC69B28BAB910007FBFF2 /* RichTextKit */; };
 		F06EC71528AF21B6005049ED /* SpaceTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06EC71428AF21B6005049ED /* SpaceTable.swift */; };
 		F06EC71828AF55FD005049ED /* NSAttributedString+asHTML.swift in Sources */ = {isa = PBXBuildFile; fileRef = F06EC71728AF55FD005049ED /* NSAttributedString+asHTML.swift */; };
 		F086C30D28A5F8E200C0788A /* Space.swift in Sources */ = {isa = PBXBuildFile; fileRef = F086C30C28A5F8E200C0788A /* Space.swift */; };
@@ -82,7 +82,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				F043570128B3908600B81C33 /* RichTextKit in Frameworks */,
+				F03DC69C28BAB910007FBFF2 /* RichTextKit in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,9 +208,9 @@
 			children = (
 				F0967C9928AC2D8000C9792C /* DetailView.swift */,
 				F0967C8528AB930500C9792C /* QuickLookDetailView.swift */,
-				F0967C8E28AB965000C9792C /* WebDetailView.swift */,
 				F0C8D79328AC5EF0002E864D /* TextEditorDetailView.swift */,
 				F09FA28F28B79AB900B955B7 /* MediaPlayerDetailView.swift */,
+				F0967C8E28AB965000C9792C /* WebDetailView.swift */,
 			);
 			path = Detail;
 			sourceTree = "<group>";
@@ -232,7 +232,7 @@
 			);
 			name = Space;
 			packageProductDependencies = (
-				F043570028B3908600B81C33 /* RichTextKit */,
+				F03DC69B28BAB910007FBFF2 /* RichTextKit */,
 			);
 			productName = Space;
 			productReference = F086C30928A5F8E200C0788A /* Space.app */;
@@ -307,7 +307,7 @@
 			);
 			mainGroup = F086C30028A5F8E200C0788A;
 			packageReferences = (
-				F04356FF28B3908600B81C33 /* XCRemoteSwiftPackageReference "RichTextKit" */,
+				F03DC69A28BAB90F007FBFF2 /* XCRemoteSwiftPackageReference "RichTextKit" */,
 			);
 			productRefGroup = F086C30A28A5F8E200C0788A /* Products */;
 			projectDirPath = "";
@@ -706,20 +706,20 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		F04356FF28B3908600B81C33 /* XCRemoteSwiftPackageReference "RichTextKit" */ = {
+		F03DC69A28BAB90F007FBFF2 /* XCRemoteSwiftPackageReference "RichTextKit" */ = {
 			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/danielsaidi/RichTextKit.git";
+			repositoryURL = "https://github.com/danielsaidi/RichTextKit";
 			requirement = {
-				branch = main;
-				kind = branch;
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.1.1;
 			};
 		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		F043570028B3908600B81C33 /* RichTextKit */ = {
+		F03DC69B28BAB910007FBFF2 /* RichTextKit */ = {
 			isa = XCSwiftPackageProductDependency;
-			package = F04356FF28B3908600B81C33 /* XCRemoteSwiftPackageReference "RichTextKit" */;
+			package = F03DC69A28BAB90F007FBFF2 /* XCRemoteSwiftPackageReference "RichTextKit" */;
 			productName = RichTextKit;
 		};
 /* End XCSwiftPackageProductDependency section */

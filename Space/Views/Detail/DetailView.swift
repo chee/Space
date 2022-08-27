@@ -12,19 +12,26 @@ struct DetailView: View {
 	var file: SpaceFile
 	@EnvironmentObject var appState: SpaceState
 	
+	var isMedia: Bool {
+		file.conforms(to: SpaceFile.mediaTypes)
+	}
+	
 	var body: some View {
 		HSplitView {
-			if file.conforms(to: TextEditorDetailView.supportedTypes) {
-				TextEditorDetailView(file: file)
-			} else if file.conforms(to: SpaceFile.videoTypes) {
+			if isMedia {
 				MediaPlayerDetailView(file: file)
+					.environmentObject(appState)
+			} else if file.conforms(to: TextEditorDetailView.supportedTypes) {
+				TextEditorDetailView(file: file)
 			} else {
 				QuickLookDetailView(url:file.url)
 					.background()
 			}
 			if appState.annotationExists(for: file) {
-				TextEditorDetailView(file: appState.annotationFile(for: file))
-					.background()
+				TextEditorDetailView(
+					file: appState.annotationFile(for: file),
+					isMediaAnnotation: isMedia
+				).background()
 			}
 		}
 	}

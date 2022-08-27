@@ -24,6 +24,11 @@ var _previewRootFile = SpaceFile(
 @main
 struct Space: App {
 	@ObservedObject var appState = SpaceState()
+	@State var pickingRoot = false
+	
+	init() {
+		appState.setRootURL(url: appState.rootURL)
+	}
 
 	var body: some Scene {
 		WindowGroup {
@@ -39,6 +44,18 @@ struct Space: App {
 			ToolbarCommands()
 			ImportFromDevicesCommands()
 		}
-		.handlesExternalEvents(matching: Set(arrayLiteral: "*"))
+		.windowStyle(.titleBar)
+		.windowToolbarStyle(.unified(showsTitle: false))
+		Settings {
+			Form {
+				Section("Folder") {
+					Text("Current: \(appState.rootURL!.path)")
+					Button("Choose Space folder") {
+						appState.setRootURL(url: appState.chooseDocument())
+					}
+				}
+			}
+			.padding()
+		}
 	}
 }

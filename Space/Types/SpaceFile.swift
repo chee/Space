@@ -23,10 +23,12 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 	
 	var id: Self {self}
 	
-	static let richTypes: [UTType] = [.rtf, .rtfd, .flatRTFD]
+	static let richTypes: [UTType] = [.rtf]
 	static let htmlTypes: [UTType] = [.html]
-	static let plainTypes: [UTType] = [.plainText]
-	static let videoTypes: [UTType] = [.movie]
+	static let plainTypes: [UTType] = [.plainText, .text]
+	static let videoTypes: [UTType] = [.movie, .audiovisualContent, .video]
+	static let audioTypes: [UTType] = [.audio]
+	static let mediaTypes: [UTType] = videoTypes + audioTypes
 	
 	var url: URL
 	var isFolder: Bool { self.type == UTType.folder }
@@ -75,11 +77,11 @@ struct SpaceFile: Identifiable, Hashable, Equatable, Comparable {
 	
 	var rtfFormat: RichTextDataFormat {
 		if isAnnotation {
-			return .archivedData
+			return .rtf
 		} else if conforms(to: Self.richTypes) {
 			return .rtf
 		} else if conforms(to: Self.htmlTypes) {
-			return .archivedData
+			return .rtf
 		} else {
 			return .plainText
 		}

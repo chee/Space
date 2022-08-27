@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import UniformTypeIdentifiers
+import AVKit
 
 @MainActor
 final class SpaceState: ObservableObject {
@@ -16,17 +17,76 @@ final class SpaceState: ObservableObject {
 	@AppStorage("sidebarSelection") var sidebarSelection: URL?
 	@Published var tableSelection: Set<URL> = Set()
 	@Published var search = ""
-	@Published var isExpandedInSidebar: [URL:Bool] = [:]
-	@Published var isExpandedInTable: [URL:Bool] = [:]
+	@Published var expandedInSidebar: [URL:Bool] = [:]
+	@Published var expandedInTable: [URL:Bool] = [:]
 	@Published var texts: [URL:NSAttributedString] = [:]
+	@Published var setMediaTime: CMTime? = nil
+	@Published var playingMediaTime: CMTime = CMTime()
 	
-	func setRootURL(url: URL) {
-		rootURL = url
+	func chooseDocument() -> URL {
+		var url: URL?
+		while url == nil {
+			let panel = NSOpenPanel()
+			panel.canChooseFiles = false
+			panel.canChooseDirectories = true
+			panel.allowsMultipleSelection = false
+			if panel.runModal() == .OK {
+				url = panel.url
+			}
+		}
+		return url!
+	}
+	
+	func setRootURL(url: URL?) {
+		var u = url
+		if u == nil {
+			u = chooseDocument()
+		}
+		rootURL = u!
 		rootFolder = SpaceFile(
-			url: url,
+			url: u!,
 			type: UTType.folder
 		)
-		isExpandedInSidebar[url] = true
+		expandedInSidebar[u!] = true
+	}
+	
+	func setTargetURL(_ url: URL) {
+		let comps = URLComponents(url: url, resolvingAgainstBaseURL: false)
+		if var comps = comps {
+			let query = comps.queryItems ?? []
+			comps.query = ""
+			comps.scheme = "file"
+			var u = comps.url!.resolvingSymlinksInPath()
+			var time: CMTime? = nil
+			for q in query {
+				if q.name == "time" {
+					if let value = q.value {
+						let sex = Double(value)
+						if let sex = sex {
+							time = CMTime(
+								seconds: sex,
+								preferredTimescale: .max
+							)
+						}
+					}
+				}
+			}
+			setMediaTime = nil
+			let ts = u
+			let ss = u.deletingLastPathComponent()
+			while u.pathComponents.count > 1 && u != rootURL {
+				u.deleteLastPathComponent()
+				expandedInSidebar[u] = true
+			}
+			sidebarSelection = ss
+			DispatchQueue.main.async {
+				self.tableSelection.removeAll()
+				self.tableSelection.insert(ts)
+				DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+					self.setMediaTime = time
+				}
+			}
+		}
 	}
 	
 	func drop(to: URL, from: URL) -> Void {
@@ -43,7 +103,7 @@ final class SpaceState: ObservableObject {
 		var f = url
 		while f != rootURL && f.pathComponents.count > 1 {
 			f = f.deletingLastPathComponent()
-			isExpandedInSidebar[f] = true
+			expandedInSidebar[f] = true
 		}
 	}
 	
@@ -60,6 +120,22 @@ final class SpaceState: ObservableObject {
 			counter += 1
 		}
 		fm.createFile(atPath: fileURL.path, contents: Data())
+		return fileURL
+	}
+	
+	func createFolder(at url: URL) -> URL {
+		var fileURL = url
+			.appendingPathComponent("New Folder")
+		var counter = 1
+		while fm.fileExists(atPath: fileURL.path) {
+			fileURL = fileURL
+				.deletingLastPathComponent()
+				.appendingPathComponent("New Folder \(counter)")
+			counter += 1
+		}
+		do {
+			try fm.createDirectory(at: fileURL, withIntermediateDirectories: true)
+		} catch {}
 		return fileURL
 	}
 }
@@ -80,6 +156,7 @@ extension SpaceState {
 			} catch {}
 		}
 	}
+
 	
 	func move(from: URL, to: URL) -> Void {
 		do {
@@ -98,7 +175,9 @@ extension SpaceState {
 				)
 			}
 		} catch {}
-		objectWillChange.send()
+		DispatchQueue.main.async {
+			self.objectWillChange.send()
+		}
 	}
 	
 	func showInFinder(_ file: SpaceFile) {
@@ -136,15 +215,27 @@ extension SpaceState {
 			trashURL(item)
 		}
 	}
-	func tableCreateFile (fallback: URL) {
+	
+	func tableCreateFile (fallback: URL, type: UTType) {
 		let focus = tableSelection.first ?? fallback
 		tableSelection.removeAll()
 		let newFile = createFile(
 			at: focus.hasDirectoryPath
 			? focus
 			: focus.deletingLastPathComponent(),
-			type: UTType.html
+			type: type
 		)
 		tableSelection.insert(newFile)
+	}
+	
+	func tableCreateFolder (fallback: URL) {
+		let focus = tableSelection.first ?? fallback
+		tableSelection.removeAll()
+		let newFolder = createFolder(
+			at: focus.hasDirectoryPath
+			? focus
+			: focus.deletingLastPathComponent()
+		)
+		tableSelection.insert(newFolder)
 	}
 }

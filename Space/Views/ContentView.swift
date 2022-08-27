@@ -41,41 +41,13 @@ struct ContentView: View {
 			}
 			Text("Select an item in the sidebar")
 		}
-		.onAppear {
-			var url = appState.rootURL
-			while url == nil {
-				let panel = NSOpenPanel()
-				panel.canChooseFiles = false
-				panel.canChooseDirectories = true
-				panel.allowsMultipleSelection = false
-				if panel.runModal() == .OK {
-					url = panel.url
-				}
-			}
-			appState.setRootURL(url: url!)
-		}
 		.searchable(
 			text: $appState.search,
 			placement: .toolbar
 		)
+		.handlesExternalEvents(preferring: Set(arrayLiteral: "*"), allowing: Set(arrayLiteral: "*"))
 		.onOpenURL {url in
-			let alert = NSAlert()
-			alert.messageText = url.path
-			alert.informativeText = url.path
-			alert.alertStyle = NSAlert.Style.warning
-			alert.addButton(withTitle: "OK")
-			alert.addButton(withTitle: "Cancel")
-			alert.runModal()
-			appState.setRootURL(url: url)
+			appState.setTargetURL(url)
 		}
-	}
-}
-
-struct MainView_Previews: PreviewProvider {
-	static var previews: some View {
-		ContentView()
-			.preferredColorScheme(.dark)
-		ContentView()
-			.preferredColorScheme(.light)
 	}
 }
