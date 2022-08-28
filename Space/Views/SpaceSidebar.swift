@@ -74,15 +74,7 @@ struct SpaceSidebar: View {
 							.keyboardShortcut("o", modifiers: [.shift, .command])
 					}
 					.onDrop(of: ["public.file-url"], isTargeted: nil) {(drops) -> Bool in
-						for drop in drops {
-							drop.loadItem(forTypeIdentifier: "public.file-url") { (data, error) in
-								let droppedURL = NSURL(
-									absoluteURLWithDataRepresentation: data as! Data,
-									relativeTo: nil
-								) as URL
-								appState.drop(to: folder.url, from: droppedURL)
-							}
-						}
+						appState.drops(of: drops, to: folder.url)
 						return true
 					}
 				})

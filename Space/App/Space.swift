@@ -13,14 +13,6 @@ let fm = FileManager.default
 let fnt = NSFontManager.shared
 let app = NSApplication.shared
 
-let _previewRootURL = URL(
-	fileURLWithPath: "/Users/chee/Documents/Notebooks/"
-).resolvingSymlinksInPath()
-
-var _previewRootFile = SpaceFile(
-	url: _previewRootURL
-)
-
 @main
 struct Space: App {
 	@ObservedObject var appState = SpaceState()

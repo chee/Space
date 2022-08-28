@@ -89,13 +89,27 @@ final class SpaceState: ObservableObject {
 		}
 	}
 	
-	func drop(to: URL, from: URL) -> Void {
+	func drop(of drop: URL, to folder: URL) -> Void {
 		move(
-			from: from,
-			to: to.appendingPathComponent(
-				from.lastPathComponent
+			from: drop,
+			to: folder.appendingPathComponent(
+				drop.lastPathComponent
 			)
 		)
+	}
+	
+	func drops(of drops: [NSItemProvider], to folderURL: URL) -> Void {
+		for droppedItem in drops {
+			droppedItem.loadItem(forTypeIdentifier: "public.file-url") { (data, error) in
+				let droppedURL = NSURL(
+					absoluteURLWithDataRepresentation: data as! Data,
+					relativeTo: nil
+				) as URL
+				DispatchQueue.main.sync {
+					self.drop(of: droppedURL, to: folderURL)
+				}
+			}
+		}
 	}
 
 	func openInSidebar(_ url: URL) -> Void {

@@ -83,19 +83,6 @@ struct SpaceTableRow: View {
 //			Text(file.accessedOn?.formatted(date: .abbreviated, time: .shortened) ?? "")
 //				.frame(maxWidth: .infinity, alignment: .leading)
 		}
-			.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
-				for drop in drops {
-					drop.loadItem(forTypeIdentifier: "public.file-url") { (data, error) in
-						let droppedURL = NSURL(
-							absoluteURLWithDataRepresentation: data as! Data,
-							relativeTo: nil
-						) as URL
-						let folderURL = file.isFolder ? file.url : file.url.deletingLastPathComponent()
-						appState.drop(to: folderURL, from: droppedURL)
-					}
-				}
-				return true
-			}
 			.lineLimit(1)
 			.font(.system(size: 18))
 			.onDoubleClick {
@@ -119,6 +106,10 @@ struct SpaceTableRow: View {
 					Label("Delete", systemImage: "delete.backward.fill")
 				}
 			}
+			.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
+				appState.drops(of: drops, to: file.url)
+				return true
+			}
 		if file.isFolder {
 			DisclosureGroup(isExpanded: isExpanded(file.url), content: {
 				if isExpanded(file.url).wrappedValue {
@@ -131,8 +122,18 @@ struct SpaceTableRow: View {
 					}
 				}
 			}, label: {label})
+			.itemProvider {
+				return NSItemProvider(object: file.url as NSURL)
+			}
+			.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
+				appState.drops(of: drops, to: file.url)
+				return true
+			}
 		} else {
 			label
+				.itemProvider {
+					return NSItemProvider(object: file.url as NSURL)
+				}
 		}
 	}
 }
@@ -148,9 +149,10 @@ struct SpaceTable: View {
 			List(folder.getChildren(), id: \.url, selection: $appState.tableSelection) {file in
 				SpaceTableRow(file: file)
 					.environmentObject(appState)
-					.itemProvider {
-						return NSItemProvider(object: folder.url as NSURL)
-					}
+			}
+			.onDrop(of: ["public.file-url"], isTargeted: nil) { (drops) -> Bool in
+				appState.drops(of: drops, to: folder.url)
+				return true
 			}
 			.toolbar {
 				ToolbarItem(placement: .primaryAction) {

@@ -60,8 +60,3 @@ struct MediaPlayerDetailView: View {
 	}
 }
 
-struct MediaPlayerDetailView_Previews: PreviewProvider {
-	static var previews: some View {
-		MediaPlayerDetailView(file: _previewRootFile)
-	}
-}
